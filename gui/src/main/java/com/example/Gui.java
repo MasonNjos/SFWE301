@@ -37,14 +37,33 @@ public class Gui extends Application {
         
         borderPane.setTop(topBar);
    
+        //TO-Do Need to add the profile syblom on the left 
+
+        //also need to make the drop down menu when it comes to if it a student an advisor or a person making the scholar ship
+
+        
+        //header
         
 
+        //To-Do
+
+         //1.need to add extra words under it like "Find your scholarsh
+
+        //2.need to add what scholar there actully are
+
+        //3.the information for the different scholarship depending on what there is.
+
+        //4. making the button works
+
+        //5.make another page for the information of the scholar ship to be displayed
+
+        //6.need to somehow make it full screen so it dosne't struggle with that
+
+        //7. need to also make it a login page
 
         
-        Button button = new Button("Click me!");
-        button.setOnAction(e -> System.out.println("Button clicked"));
 
-        StackPane root = new StackPane(button);
+     
         Scene scene = new Scene(borderPane, 600, 600);
 
         stage.setTitle("ScholarShip Tracker");
