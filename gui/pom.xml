@@ -27,7 +27,7 @@
       <version>${javafx.version}</version>
     </dependency>
 
-    <!-- JavaFX graphics Fx -->
+    <!-- JavaFX graphics Fx  Scence Builder-->
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-graphics</artifactId>
