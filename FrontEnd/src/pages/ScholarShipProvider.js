@@ -1,11 +1,19 @@
+import './styles/ScholarShipProvider.css';
+
 function ScholarShipProvider() {
 return(
+<div className="ScholarShipProviderPage">
 
-    <div>
-<h2>Student Scholarships</h2>
-<p>Here is the scholarship provider pagemScholarships</p>
+<main className ='content-aera'>
+    
+</main>
+
+
+
+
+
     </div>
-    );  
-  
+
+); 
 }
     export default ScholarShipProvider;

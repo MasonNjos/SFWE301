@@ -1,22 +1,30 @@
-function StudentPage() {
-  return(
+import './styles/StudentPage.css';
+import React from 'react';
+import { useState } from 'react';
 
-  
+
+function StudentPage(){
+
+
+
+return (
+<div className="App">
 {/* content part of the webiste*/}
-
 <main className='content'>
-  <p><strong>Welcome to Scholar Cats!</strong></p>
-   <p>Explore Scholarships tailored to your goals and achievements</p>
+<p><strong>Welcome to Scholar Cats!</strong></p>
+<p>Explore Scholarships tailored to your goals and achievements</p>
 
 
 
 <form action ="/search" method="get">
-   <input type="text" id = "search-input" placeholder='Search ScholarShips...'></input>
-   <button type ="submit">Search</button>
+<input type="text" id = "search-input" placeholder='Search ScholarShips...'></input>
+<button type ="submit">Search</button>
 </form>
+
 
 {/* Top horizoantal boxes*/}
 <div class = "Top-Horziontal-Boxes">
+
 <div class = "Top-Box">Total Avaliable
   <p> Some number that we will find out later </p>
 </div>
@@ -36,6 +44,7 @@ function StudentPage() {
 
 <div class = "Scholarship-list">
 
+  
 <div class ="Scholarship">
 <p>Scholar ship one</p>
 <span className='status-badge open'>Open</span>
@@ -66,23 +75,21 @@ function StudentPage() {
 <div className='money-info'> $$$$$$</div>
 <div className = 'date-info'>augesu 74</div>
 </div>
-
 </div>
+
+
+
+
+
+
+
 </main>
 
 
 
 
-{/* Bottom part of the webiste*/}
-<footer className='footer'>
-  <small>Scholarship Tracker</small>
-</footer>
+
 </div>
-  )
-
-    );  
-  
-
+)
 }
-
 export default StudentPage;

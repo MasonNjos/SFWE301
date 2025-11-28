@@ -60,6 +60,11 @@ function App() {
 
         </Routes>
       </main>
+
+
+<footer className='footer'>
+<small>Scholarship Tracker</small>
+</footer>
     </div>
   );
 }
