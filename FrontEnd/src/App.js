@@ -93,14 +93,8 @@ function App(){
 <div className='money-info'> $$$$$$</div>
 <div className = 'date-info'>augesu 74</div>
 </div>
+
 </div>
-
-
-
-
-
-
-
 </main>
 
 
