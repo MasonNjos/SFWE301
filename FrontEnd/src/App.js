@@ -1,110 +1,67 @@
 import './App.css';
 import { useState } from 'react';
+import { Routes, Route, Link, useNavigate } from 'react-router-dom';
+import Home from './pages/Home';
+import StudentPage from './pages/StudentPage';
+import AdvisorPage from './pages/AdvisorPage';
+import ScholarShipProvider from './pages/ScholarShipProvider';
 
-function App(){
-  const [role, setRole] = useState("");
+
+function App() {
+  const [role, setRole] = useState('');
+  const navigate = useNavigate();
 
   const handleRoleChange = (event) => {
-    setRole(event.target.value);
-  }
+    const selected = event.target.value;
+    setRole(selected);
+
+      if (selected == 'Student') navigate ('/student');
+      else if (selected == 'Advisor') navigate ('/advisor');
+      else if (selected == 'Scholarship Provider') navigate ('/provider');
+      else navigate ('/');
+  };
+
+
+
+
+
+
 
   return (
     <div className="App">
-      {/* Header */}
-      <header className = "top-bar">
-        <h1 className='title'> Scholar Cats</h1>
+      {/* Header / Top Bar */}
+      <header className="top-bar">
+        <h1 className="title">Scholar Cats</h1>
 
-        <select 
-        className='role-select'
-        value={role}
-        onChange = {handleRoleChange}
+
+
+        {/* Role dropdown */}
+        <select
+          className="role-select"
+          value={role}
+          onChange={handleRoleChange}
         >
-          <option value ="" disabled >
+          <option value="" disabled>
             Select Role
           </option>
-          <option value="Student">Student </option>
-          <option value ="Advisor">Advisor</option>
-          <option value = "Scholarship provider">Scholarship Provider</option>
+          <option value="Student">Student</option>
+          <option value="Advisor">Advisor</option>
+          <option value="Scholarship Provider">Scholarship Provider</option>
         </select>
       </header>
 
+      {/* Page content */}
+      <main className="content">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/student" element={<StudentPage />} />
+          <Route path="/advisor" element={<AdvisorPage />} />
+          <Route path="/provider" element={<ScholarShipProvider />} />
 
-{/* content part of the webiste*/}
-
-<main className='content'>
-  <p><strong>Welcome to Scholar Cats!</strong></p>
-   <p>Explore Scholarships tailored to your goals and achievements</p>
-
-
-
-<form action ="/search" method="get">
-   <input type="text" id = "search-input" placeholder='Search ScholarShips...'></input>
-   <button type ="submit">Search</button>
-</form>
-
-{/* Top horizoantal boxes*/}
-<div class = "Top-Horziontal-Boxes">
-<div class = "Top-Box">Total Avaliable
-  <p> Some number that we will find out later </p>
-</div>
-
-<div class = "Top-Box">Your Applications
-<p> Some number that will also be found later</p>
-</div>
-
-<div class = "Top-Box">Match Rate
-  <p> Some number that will also be found later</p>
-</div>
-
-</div>
-
-
-<p>Avaliable ScholarShips</p>
-
-<div class = "Scholarship-list">
-
-<div class ="Scholarship">
-<p>Scholar ship one</p>
-<span className='status-badge open'>Open</span>
-<button className='scholar-ship-button'>View</button>
-<div className='money-info'> $$$$$$</div>
-<div className = 'date-info'>augesu 74</div>
-</div>
-
-<div class ="Scholarship">
-<p>Scholar ship two</p>
-<span className='status-badge closed'>Closed</span>
-<button className='scholar-ship-button'>View</button>
-<div className='money-info'> $$$$$$</div>
-<div className = 'date-info'>augesu 74</div>
-</div>
-
-<div class ="Scholarship">
-<p>Scholar ship three</p>
-<span className='status-badge soon'>Closing soon</span>
-<button className='scholar-ship-button'>View</button>
-<div className='money-info'> $$$$$$</div>
-<div className = 'date-info'>augesu 74</div>
-</div>
-
-<div class ="Scholarship">
-<p>Scholar ship four</p>
-<button className='scholar-ship-button'>View</button>
-<div className='money-info'> $$$$$$</div>
-<div className = 'date-info'>augesu 74</div>
-</div>
-
-</div>
-</main>
-
-
-
-
-{/* Bottom part of the webiste*/}
-<footer className='footer'>
-  <small>Scholarship Tracker</small>
-</footer>
-</div>
-  )
+        </Routes>
+      </main>
+    </div>
+  );
 }
+
 export default App;
