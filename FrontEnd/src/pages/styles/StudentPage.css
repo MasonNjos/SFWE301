@@ -1,8 +1,8 @@
 /* Container */
 :root{
-  --bg: #ffe7e7a4;
+  --bg: ##001148;
   --card-accent: #89CFF0;
-  --muted: #6b7280;
+  --muted: #001148;
   --shadow-1: 0 6px 18px rgba(15, 23, 42, 0.06);
   --shadow-2: 0 10px 30px rgba(15, 23, 42, 0.08);
   --accent: #0ea5e9;
@@ -24,7 +24,7 @@
 .Top-Box {
   flex: 1 1 200px;
   min-width: 200px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.4)), var(--card-accent);
+  background: var(--card-accent);
   padding: 1.25rem;
   border-radius: 14px;
   box-shadow: var(--shadow-1), var(--shadow-2);
@@ -34,10 +34,9 @@
   flex-direction: column;
   justify-content: center;
   gap: 0.35rem;
-  transition: transform 220ms cubic-bezier(.2,.9,.3,1), box-shadow 220ms;
 }
 
-.Top-Box:hover{transform: translateY(-6px); box-shadow: 0 20px 40px rgba(2,6,23,0.12);}
+.Top-Box:hover{transform: translateY(-6px)}
 
 /* Number inside the top box */
 .Top-Box p {
@@ -47,6 +46,9 @@
   color: #021124;
 }
 
+.content > form button[type="submit"]{
+  background: #06b6d4;
+}
 
 /* Scholarship Cards Container - stacked vertically */
 .Scholarship-list {
@@ -62,8 +64,7 @@
   padding: 1.25rem 1.25rem 1.25rem 1.9rem; /* extra left padding for accent stripe */
   border-radius: 16px;
   box-shadow: var(--shadow-1);
-  border: 1px solid rgba(2,6,23,0.04);
-  transition: transform 180ms ease, box-shadow 180ms ease;
+  border: 1px solid rgba(2,6,23,0.04);  
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -81,7 +82,7 @@
   position: absolute;
   left: 0; top: 0; bottom: 0;
   width: 6px;
-  background: linear-gradient(180deg, rgba(14,165,233,0.95), rgba(14,165,233,0.6));
+  background:  rgba(0, 17, 72);
   border-top-left-radius: 16px;
   border-bottom-left-radius: 16px;
 }
@@ -112,7 +113,7 @@
 /* Action button */
 .scholar-ship-button{
   margin-left: 10px;
-  background: linear-gradient(90deg,var(--accent), #06b6d4);
+  background: #06b6d4;
   border: none;
   color: white;
   padding: 0.rem 0.9rem;
@@ -120,10 +121,9 @@
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 10px 18px rgba(14,165,233,0.12);
-  transition: transform 160ms ease, box-shadow 160ms ease, opacity 160ms;
 }
 
-.scholar-ship-button:hover{transform: translateY(-3px); box-shadow: 0 18px 36px rgba(14,165,233,0.12);}
+.scholar-ship-button:hover{transform: translateY(-3px)}
 
 .money-info{
   color: #04263b;
