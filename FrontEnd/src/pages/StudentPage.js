@@ -79,10 +79,10 @@ function StudentPage(){
             <p>{scholarships.length}</p>
           </div>
           <div className="Top-Box">Your Applications
-            <p>Some number that will also be found later</p>
+            <p>0</p>
           </div>
           <div className="Top-Box">Match Rate
-            <p>Some number that will also be found later</p>
+            <p>75% (insert java output here)</p>
           </div>
         </div>
 
