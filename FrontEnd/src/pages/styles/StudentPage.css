@@ -1,12 +1,18 @@
-.App {
-min-height : 100vh;
-display: flex;
-flex-direction: column;
+/* Container */
+:root{
+  --bg: #ffe7e7a4;
+  --card-accent: #89CFF0;
+  --muted: #6b7280;
+  --shadow-1: 0 6px 18px rgba(15, 23, 42, 0.06);
+  --shadow-2: 0 10px 30px rgba(15, 23, 42, 0.08);
+  --accent: #0ea5e9;
+  --success: #10b981;
+  --danger: #ef4444;
+  --soon: #f59e0b; 
 }
 
-.top-bar {
-  background-color: #001148;
-  color: white;
+/* Container */
+.Top-Horziontal-Boxes {
   display: flex;
   gap: 1.25rem;
   margin: 2rem 0;
