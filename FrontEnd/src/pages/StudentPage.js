@@ -2,94 +2,123 @@ import './styles/StudentPage.css';
 import React from 'react';
 import { useState } from 'react';
 
-
 function StudentPage(){
+  // State for search query
+  const [searchQuery, setSearchQuery] = useState('');
 
+  // Scholarship data array
+  const scholarships = [
+    {
+      id: 1,
+      name: 'Scholarship One',
+      status: 'open',
+      amount: '$5,000',
+      deadline: 'August 15, 2024'
+    },
+    {
+      id: 2,
+      name: 'Scholarship Two',
+      status: 'closed',
+      amount: '$3,000',
+      deadline: 'August 20, 2024'
+    },
+    {
+      id: 3,
+      name: 'Scholarship Three',
+      status: 'soon',
+      amount: '$10,000',
+      deadline: 'August 30, 2024'
+    },
+    {
+      id: 4,
+      name: 'Scholarship Four',
+      status: 'open',
+      amount: '$7,500',
+      deadline: 'September 10, 2024'
+    }
+  ];
 
+  // Filter scholarships based on search query
+  const filteredScholarships = scholarships.filter(scholarship => 
+    scholarship.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    scholarship.amount.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    scholarship.deadline.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-return (
-<div className="App">
-{/* content part of the webiste*/}
-<main className='content'>
-<p><strong>Welcome to Scholar Cats!</strong></p>
-<p>Explore Scholarships tailored to your goals and achievements</p>
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
 
+  // Handle form submit (prevent page reload)
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+  };
 
+  return (
+    <div className="App">
+      {/* content part of the website*/}
+      <main className='content'>
+        <p><strong>Welcome to Scholar Cats!</strong></p>
+        <p>Explore Scholarships tailored to your goals and achievements</p>
+        
+        <form onSubmit={handleSearchSubmit}>
+          <input 
+            type="text" 
+            id="search-input" 
+            placeholder='Search Scholarships...'
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
+          <button type="submit">Search</button>
+        </form>
 
-<form action ="/search" method="get">
-<input type="text" id = "search-input" placeholder='Search ScholarShips...'></input>
-<button type ="submit">Search</button>
-</form>
+        {/* Top horizontal boxes*/}
+        <div className="Top-Horziontal-Boxes">
+          <div className="Top-Box">Total Available
+            <p>{scholarships.length}</p>
+          </div>
+          <div className="Top-Box">Your Applications
+            <p>Some number that will also be found later</p>
+          </div>
+          <div className="Top-Box">Match Rate
+            <p>Some number that will also be found later</p>
+          </div>
+        </div>
 
-
-{/* Top horizoantal boxes*/}
-<div class = "Top-Horziontal-Boxes">
-
-<div class = "Top-Box">Total Avaliable
-  <p> Some number that we will find out later </p>
-</div>
-
-<div class = "Top-Box">Your Applications
-<p> Some number that will also be found later</p>
-</div>
-
-<div class = "Top-Box">Match Rate
-  <p> Some number that will also be found later</p>
-</div>
-
-</div>
-
-
-<p>Avaliable ScholarShips</p>
-
-<div class = "Scholarship-list">
-
-  
-<div class ="Scholarship">
-<p>Scholar ship one</p>
-<span className='status-badge open'>Open</span>
-<button className='scholar-ship-button'>View</button>
-<div className='money-info'> $$$$$$</div>
-<div className = 'date-info'>augesu 74</div>
-</div>
-
-<div class ="Scholarship">
-<p>Scholar ship two</p>
-<span className='status-badge closed'>Closed</span>
-<button className='scholar-ship-button'>View</button>
-<div className='money-info'> $$$$$$</div>
-<div className = 'date-info'>augesu 74</div>
-</div>
-
-<div class ="Scholarship">
-<p>Scholar ship three</p>
-<span className='status-badge soon'>Closing soon</span>
-<button className='scholar-ship-button'>View</button>
-<div className='money-info'> $$$$$$</div>
-<div className = 'date-info'>augesu 74</div>
-</div>
-
-<div class ="Scholarship">
-<p>Scholar ship four</p>
-<button className='scholar-ship-button'>View</button>
-<div className='money-info'> $$$$$$</div>
-<div className = 'date-info'>augesu 74</div>
-</div>
-</div>
-
-
-
-
-
-
-
-</main>
-
-
-
-
-
-</div>
-)
+        <p>Available Scholarships {searchQuery && `(${filteredScholarships.length} results)`}</p>
+        
+        <div className="Scholarship-list">
+          {filteredScholarships.length > 0 ? (
+            filteredScholarships.map(scholarship => (
+              <div className="Scholarship" key={scholarship.id}>
+                <p>{scholarship.name}</p>
+                {scholarship.status && (
+                  <span className={`status-badge ${scholarship.status}`}>
+                    {scholarship.status === 'open' ? 'Open' : 
+                     scholarship.status === 'closed' ? 'Closed' : 
+                     'Closing Soon'}
+                  </span>
+                )}
+                <button className='scholar-ship-button'>View</button>
+                <div className='money-info'>{scholarship.amount}</div>
+                <div className='date-info'>{scholarship.deadline}</div>
+              </div>
+            ))
+          ) : (
+            <div style={{
+              textAlign: 'center',
+              padding: '2rem',
+              color: '#666',
+              fontSize: '1.1rem'
+            }}>
+              No scholarships found matching "{searchQuery}"
+            </div>
+          )}
+        </div>
+      </main>
+    </div>
+  );
 }
+
 export default StudentPage;
