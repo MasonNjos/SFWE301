@@ -6,12 +6,15 @@ public class Student {
     private String major;
     private String gpa;
     private String year;
-    private String score;
 
     public Student() {}
-    public Student(String firstName, String lastName, String major, String gpa, String year, String score) {
-        this.firstName = firstName; this.lastName = lastName;
-        this.major = major; this.gpa = gpa; this.year = year; this.score = score;
+    // constructor
+    public Student(String firstName, String lastName, String major, String gpa, String year) {
+        this.firstName = firstName; 
+        this.lastName = lastName;
+        this.major = major; 
+        this.gpa = gpa; 
+        this.year = year;
     }
     // getters + setters
     public String getFirstName(){return firstName;}
@@ -24,6 +27,4 @@ public class Student {
     public void setGpa(String g){this.gpa=g;}
     public String getYear(){return year;}
     public void setYear(String y){this.year=y;}
-    public String getScore(){return score;}
-    public void setScore(String s){this.score=s;}
 }
