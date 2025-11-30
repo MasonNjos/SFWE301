@@ -11,30 +11,30 @@ function StudentPage(){
     {
       id: 1,
       name: 'Scholarship One',
-      status: 'open',
+      status: 'closed',
       amount: '$5,000',
-      deadline: 'August 15, 2024'
+      deadline: 'November 15, 2025'
     },
     {
       id: 2,
       name: 'Scholarship Two',
-      status: 'closed',
+      status: 'open',
       amount: '$3,000',
-      deadline: 'August 20, 2024'
+      deadline: 'December 20, 2025'
     },
     {
       id: 3,
       name: 'Scholarship Three',
-      status: 'soon',
+      status: 'open',
       amount: '$10,000',
-      deadline: 'August 30, 2024'
+      deadline: 'January 30, 2026'
     },
     {
       id: 4,
       name: 'Scholarship Four',
       status: 'open',
       amount: '$7,500',
-      deadline: 'September 10, 2024'
+      deadline: 'December 10, 2025'
     }
   ];
 

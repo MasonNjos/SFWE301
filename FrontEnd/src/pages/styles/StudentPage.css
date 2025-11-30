@@ -44,6 +44,12 @@
   color: #ffffff;
 }
 
+.content > form input[type="text"]{
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
 .content > form button[type="submit"]{
   background: #f30107;
 }
