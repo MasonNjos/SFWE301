@@ -128,6 +128,31 @@ function AdvisorPage() {
             </tr>
         </tbody>
         </table>
+            <div className = "student-list">
+            <p>List of all students and Information</p>
+
+            <table className="student-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Gpa</th>
+                <th>Field of Study</th>
+                <th>ScholarShip Awarded</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Jane Smith</td>
+                <td>jane.smith@example.com</td>
+                <td>3.8</td>
+                <td>Computer Science</td>
+                <td>STEM Excellence Scholarship</td>
+            </tr>
+        </tbody>
+         </table>      
+            </div>
+        
     </section>
     </section>
 

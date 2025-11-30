@@ -10,13 +10,7 @@
   box-sizing: border-box;
 font-family: Arial, Helvetica, sans-serif; 
 text-align: left;
-
 }
-
-
-
-
-
 
 .card-account-request {
   background: #ffffff;
@@ -25,13 +19,6 @@ text-align: left;
   box-sizing: border-box;
 }
 
-.card-account-request h2 {
-  margin: 0 0 6px 0;
-  font-size: 2.5rem;
-  color: #000000;
-}
-
-
 .application-reports {
   background: #ffffff;
   border-radius: 16px;
@@ -39,44 +26,36 @@ text-align: left;
   box-sizing: border-box;
 }
 
-
-
 .table-request-table,
-.scholarship-table {
+.scholarship-table,
+.student-table {
   width: 100%;
   font-size: 14px;
   margin-top: 12px;
 }
 
 .table-request-table thead,
-.scholarship-table thead {
+.scholarship-table thead,
+.student-table thead {
   background: #f3f4f6;
 }
 
 .table-request-table th,
 .table-request-table td,
 .scholarship-table th,
-.scholarship-table td {
+.scholarship-table td,
+.student-table th,
+.student-table td {
   padding: 8px 10px;
   text-align: left;
   border-bottom: 1px solid #e5e7eb;
 }
 
-.table-request-table th,
-.scholarship-table th {
-  font-weight: 600;
-  color: #444;
-}
 
-.table-request-table tbody tr:hover,
-.scholarship-table tbody tr:hover {
-  background: #f9fafb;
-}
 
-/* Action buttons in table */
 .Scholarship-decision {
   display: flex;
-  gap: 6px;
+  gap: 10px;
 }
 
 /* Buttons (generic) */
@@ -93,15 +72,8 @@ text-align: left;
   cursor: pointer;
 }
 
-.button-approve:active,
-.button-deny:active,
-.button-generate-report:active,
-.button-send-notification:active,
-.submit-button:active {
-  transform: translateY(1px);
-}
 
-/* Specific button colors */
+
 .button-approve {
   background: #22c55e;
   color: #fff;
@@ -155,34 +127,6 @@ text-align: left;
   min-width: 160px;
 }
 
-.filter-field p {
-  margin: 0 0 4px 0;
-  font-size: 13px;
-  font-weight: 600;
-  color: #444;
-}
-
-.advisor-main input,
-.advisor-main select,
-.advisor-main textarea {
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid #cbd5e1;
-  font-size: 14px;
-  box-sizing: border-box;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-  background: #fff;
-}
-
-.advisor-main input:focus,
-.advisor-main select:focus,
-.advisor-main textarea:focus {
-  border-color: #4c6fff;
-  box-shadow: 0 0 0 2px rgba(76, 111, 255, 0.2);
-  outline: none;
-}
-
-
 .category-select {
   max-width: 220px;
 }
@@ -216,3 +160,9 @@ text-align: left;
 .scholarship-table td {
   word-wrap: break-word;
 }
+
+
+
+
+
+
