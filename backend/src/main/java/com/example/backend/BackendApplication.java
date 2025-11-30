@@ -166,8 +166,6 @@ public class BackendApplication {
 							// invalid amount format, no points
 						}
 
-						
-
 	
 					} 
 					else {
@@ -206,6 +204,9 @@ public class BackendApplication {
 		// suggest scholarships
 			// System shall recommend scholarships to applicants based on gpa, major, and school year
 			// suggest based on score
+			// use the list of match scores, index corresponds to scholarship id
+			// maybe we could add a spot on the frontend for #1 recommended scholarship?
+			// and then the rest of the scores to sort them
 
 
 			// student matching (based on score)
@@ -225,8 +226,6 @@ public class BackendApplication {
 			} catch (IOException e) {
 				System.out.println("Failed to write scores to CSV: " + e.getMessage());
 			}
-
-
 		
 	}
 
