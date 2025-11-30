@@ -42,7 +42,8 @@ function StudentPage(){
   const filteredScholarships = scholarships.filter(scholarship => 
     scholarship.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     scholarship.amount.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    scholarship.deadline.toLowerCase().includes(searchQuery.toLowerCase())
+    scholarship.deadline.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    scholarship.status.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Handle search input change
