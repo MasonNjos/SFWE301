@@ -8,6 +8,8 @@ function StudentPage(){
   const [error, setError] = useState(null);
   const [students, setStudents] = useState([]);
   const [selectedStudentId, setSelectedStudentId] = useState('');
+  const [selectedScholarship, setSelectedScholarship] = useState(null);
+  const [userPersonalStatement, setUserPersonalStatement] = useState('');
 
   useEffect(() => {
     const fetchScholarships = async () => {
@@ -24,7 +26,8 @@ function StudentPage(){
           deadline: s.deadline || '',
           major: s.major || '',
           gpa: s.gpa || '',
-          year: s.year || ''
+          year: s.year || '',
+          ps: s.ps || '',
         }));
         setScholarships(normalized);
       } catch (err) {
@@ -77,6 +80,40 @@ function StudentPage(){
   const matchRate = selectedStudent && selectedStudent.score !== '' && selectedStudent.score != null
     ? (isNaN(parseFloat(selectedStudent.score)) ? String(selectedStudent.score) : Math.round(parseFloat(selectedStudent.score)))
     : null;
+
+  // If a scholarship is selected, show a simple detail page and stop rendering the list
+  if (selectedScholarship) {
+    return (
+      <div className="App">
+        <main className='content'>
+          <button className='scholar-ship-button' onClick={() => setSelectedScholarship(null)} style={{marginBottom: '12px'}}>←</button>
+          <div className='Scholarship-Detail'>
+            <h2>{selectedScholarship.name}</h2>
+            <p><strong>Amount:</strong> {selectedScholarship.amount || '—'}</p>
+            <p><strong>Deadline:</strong> {selectedScholarship.deadline || '—'}</p>
+            <p><strong>Major requirement:</strong> {selectedScholarship.major || '—'}</p>
+            <p><strong>GPA requirement:</strong> {selectedScholarship.gpa || '—'}</p>
+            <hr />
+            <p><strong>Personal statement / question</strong></p>
+            {String(selectedScholarship.ps).trim().toLowerCase() === 'yes' ? (
+            <textarea
+              className="personal-statement-box"
+              placeholder="Enter your personal statement here..."
+              value={userPersonalStatement}
+              onChange={(e) => setUserPersonalStatement(e.target.value)}
+              rows={6}
+              style={{ width: "100%", padding: "10px" }}
+            />
+          ) : (
+            <p style={{ whiteSpace: "pre-wrap" }}>
+              {'No personal statement question provided.'}
+            </p>
+)}
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="App">
@@ -134,7 +171,7 @@ function StudentPage(){
                      'Closing Soon'}
                   </span>
                 )}
-                <button className='scholar-ship-button'>View</button>
+                <button onClick={() => setSelectedScholarship(scholarship)} className='scholar-ship-button'>View</button>
                 <div className='money-info'>{scholarship.amount}</div>
                 <div className='date-info'>{scholarship.deadline}</div>
               </div>

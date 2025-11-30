@@ -9,10 +9,11 @@ public class Scholarship {
     private String major;
     private String gpa;
     private String year;
+    private String ps;
 
     public Scholarship() {}
 
-    public Scholarship(String id, String name, String status, String amount, String deadline, String major, String gpa, String year) {
+    public Scholarship(String id, String name, String status, String amount, String deadline, String major, String gpa, String year, String ps) {
         this.id = id;
         this.name = name;
         this.status = status;
@@ -21,6 +22,7 @@ public class Scholarship {
         this.major = major;
         this.gpa = gpa;
         this.year = year;
+        this.ps = ps;
     }
 
     public String getId() { return id; }
@@ -46,4 +48,7 @@ public class Scholarship {
 
     public String getYear() { return year; }
     public void setYear(String year) { this.year = year; }
+
+    public String getPs() { return ps; }
+    public void setPs(String ps) { this.ps = ps; }
 }
