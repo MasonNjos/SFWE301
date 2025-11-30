@@ -37,10 +37,11 @@ public class BackendApplication {
 					String gpa = headerIndex.containsKey("GPA") ? fields[headerIndex.get("GPA")].trim() : "";
 					String major = headerIndex.containsKey("Major") ? fields[headerIndex.get("Major")].trim() : "";
 					String schoolYear = headerIndex.containsKey("Year") ? fields[headerIndex.get("Year")].trim() : "";
+					String score = headerIndex.containsKey("Score") ? fields[headerIndex.get("Score")].trim() : "";
 
 					// Process the data as needed
 					// store data in a list of Student objects
-					Student student = new Student(fName, lName, major, gpa, schoolYear);
+					Student student = new Student(fName, lName, major, gpa, schoolYear, score);
 					students.add(student);
 
 				}
@@ -84,10 +85,12 @@ public class BackendApplication {
 					String scholarshipMajor = headerIndex.containsKey("major") ? fields[headerIndex.get("major")].trim() : "";
 					String scholarshipGpa = headerIndex.containsKey("gpa") ? fields[headerIndex.get("gpa")].trim() : "";
 					String scholarshipYear = headerIndex.containsKey("year") ? fields[headerIndex.get("year")].trim() : "";
+					String scholarshipPs = headerIndex.containsKey("ps") ? fields[headerIndex.get("ps")].trim() : "";
 
 					// store data in a list of scholarships
 					Scholarship currScholarship = new Scholarship(scholarshipId, scholarshipName, scholarshipStatus, 
-					scholarshipAmount, scholarshipDeadline, scholarshipMajor, scholarshipGpa, scholarshipYear);
+					scholarshipAmount, scholarshipDeadline, scholarshipMajor, scholarshipGpa, scholarshipYear, scholarshipPs);
+
 					scholarships.add(currScholarship);
 
 				}
@@ -109,7 +112,7 @@ public class BackendApplication {
 
 		// suggest scholarships
 			// System shall recommend scholarships to applicants based on gpa, major, and school year
-			// compare student csv and sholarships csv
+			// suggest based on score
 
 
 
