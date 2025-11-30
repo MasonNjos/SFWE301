@@ -21,7 +21,7 @@ function AdvisorPage() {
                         // remove after 3 seconds
                         setTimeout(() => {
                                 setToasts((t) => t.filter((x) => x.id !== id));
-                        }, 2000);
+                        }, 1200);
                 };
     
     return(
@@ -141,7 +141,12 @@ function AdvisorPage() {
           style={{width: '100%', minHeight: 80, padding: 8}}
         />
         <button type="button" className="button-send-notification" onClick={sendNotification}>Send Notification</button>
-    </div> 
+    </div>
+
+    <div className="form-row">
+        <textarea placeholder='Write the accoument here..'></textarea>
+    <button className='submit-button'>Submit Accoument</button>
+    </div>
 
 
 

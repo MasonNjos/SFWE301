@@ -42,7 +42,8 @@ function StudentPage(){
     scholarship.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     (scholarship.amount || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
     (scholarship.deadline || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (scholarship.status || '').toLowerCase().includes(searchQuery.toLowerCase())
+    (scholarship.status || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (scholarship.major || '').toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
