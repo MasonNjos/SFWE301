@@ -52,7 +52,8 @@ public class CsvController {
                 String major = row.length>5?row[5]:"";
                 String gpa = row.length>6?row[6]:"";
                 String year = row.length>7?row[7]:"";
-                out.add(new Scholarship(id, name, status, amount, deadline, major, gpa, year));
+                String ps = row.length>8?row[8]:"";
+                out.add(new Scholarship(id, name, status, amount, deadline, major, gpa, year, ps));
             }
             return out;
         }
