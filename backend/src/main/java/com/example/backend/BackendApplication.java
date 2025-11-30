@@ -2,9 +2,13 @@ package com.example.backend;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,18 +114,70 @@ public class BackendApplication {
 				}
 
 
-		// suggest scholarships
-			// System shall recommend scholarships to applicants based on gpa, major, and school year
-			// suggest based on score
-
-
-
-
 		// automatic scoring (mentioned above)
 			// give each scholarship a "score" and then sort by highest score
 			// score is based on how well you match to the scholarship
 			// raise score based on gpa - 1 pt for min, 2 points for every 0.5 above min or something along those lines
 			// if one requirement is not met score = 0
+			// calculate score for each student
+			for (Student currStudent : students) {
+				int currScore = 0;		// calculate later
+				int matches = 0;
+				int scholarshipCount = scholarships.size();
+				
+				for (Scholarship currScholarship : scholarships) {
+					// check each requirement
+					boolean eligible = true;
+					double studentGpa = Double.parseDouble(currStudent.getGpa());
+					double minGpa = Double.parseDouble(currScholarship.getGpa());
+					// major
+					if (!(currScholarship.getMajor().equals(currStudent.getMajor()))) {
+						eligible = false;
+					}
+					// gpa
+					else if (studentGpa < minGpa) {
+						eligible = false;
+					}
+					// year
+					else if (!(currStudent.getYear().equals(currScholarship.getYear()))) {
+						eligible = false;
+					}
+					// if eligible increment matches by one
+					// score logic probably can be somewhere here too but I just want to get matches for now
+					if (eligible) {
+						matches++;
+	
+					} 
+					else {
+						// not eligible
+						// do not increment matches
+					}
+
+				}
+				// calculate match %
+				double matchPercent = ((double)matches / (double)scholarshipCount) * 100.0;
+				// add match percent to student object
+				String matchPercentStr = String.format("%.2f", matchPercent);
+				currStudent.setScore(matchPercentStr);
+			}
+
+				// test reading file by outputting each line
+		// DELETE LATER JUST FOR DEBUGGING
+				for (Student currStudent : students) {
+					System.out.println("Student: " + currStudent.getFirstName() + " " + currStudent.getLastName() +
+							", Major: " + currStudent.getMajor() +
+							", GPA: " + currStudent.getGpa() +
+							", Year: " + currStudent.getYear() + 
+							", Match %: " + currStudent.getScore());
+
+				}
+
+
+
+		// suggest scholarships
+			// System shall recommend scholarships to applicants based on gpa, major, and school year
+			// suggest based on score
+
 
 			// student matching (based on score)
 			// sort scholarships by score (high to low)
@@ -134,8 +190,95 @@ public class BackendApplication {
 
 		// add match rate to student.csv
 			
+			// write scores back to CSV (safe overwrite)
+			try {
+				writeScoresToCsv(Paths.get("student.csv"), students, "Score");
+			} catch (IOException e) {
+				System.out.println("Failed to write scores to CSV: " + e.getMessage());
+			}
+
 
 		
 	}
+
+	// Write student scores back into the CSV file.
+// - path: Path to students CSV
+// - students: List<Student> where Student.getScore() returns the match percent string
+// - scoreHeader: column name to update (e.g. "Score")
+private static void writeScoresToCsv(Path path, List<Student> students, String scoreHeader) throws IOException {
+    List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
+    if (lines.isEmpty()) return;
+
+    String header = lines.get(0);
+    String[] headerCols = header.split(",", -1);
+
+    int scoreIdx = -1;
+    for (int i = 0; i < headerCols.length; i++) {
+        if (headerCols[i].trim().equalsIgnoreCase(scoreHeader)) { scoreIdx = i; break; }
+    }
+
+    boolean appendedScore = false;
+    if (scoreIdx == -1) {
+        appendedScore = true;
+        header = header + "," + scoreHeader;
+    }
+
+    List<String> out = new ArrayList<>();
+    out.add(header);
+
+    int rowCount = Math.max(lines.size() - 1, students.size());
+    for (int i = 0; i < rowCount; i++) {
+        String origLine = (i + 1 < lines.size()) ? lines.get(i + 1) : "";
+        String[] cols = origLine.isEmpty() ? new String[0] : origLine.split(",", -1);
+
+        if (appendedScore) {
+            String scoreVal = (i < students.size()) ? students.get(i).getScore() : "";
+            String newLine = origLine.isEmpty() ? csvEscape(scoreVal) : origLine + "," + csvEscape(scoreVal);
+            out.add(newLine);
+        } else {
+            if (cols.length <= scoreIdx) {
+                String[] newCols = Arrays.copyOf(cols, headerCols.length);
+                for (int k = 0; k < newCols.length; k++) if (newCols[k] == null) newCols[k] = "";
+                newCols[scoreIdx] = (i < students.size()) ? students.get(i).getScore() : "";
+                StringBuilder sb = new StringBuilder();
+                for (int k = 0; k < newCols.length; k++) {
+                    if (k > 0) sb.append(',');
+                    sb.append(csvEscape(newCols[k]));
+                }
+                out.add(sb.toString());
+            } else {
+                cols[scoreIdx] = (i < students.size()) ? students.get(i).getScore() : "";
+                StringBuilder sb = new StringBuilder();
+                for (int k = 0; k < cols.length; k++) {
+                    if (k > 0) sb.append(',');
+                    sb.append(csvEscape(cols[k]));
+                }
+                out.add(sb.toString());
+            }
+        }
+    }
+
+	Path parent = path.toAbsolutePath().getParent();
+	if (parent == null) {
+		// when path has no parent (e.g. running with relative single-name file), use working dir
+		parent = Paths.get(System.getProperty("user.dir")).toAbsolutePath();
+	}
+	Path tmp = Files.createTempFile(parent, "student-", ".csv");
+	Files.write(tmp, out, StandardCharsets.UTF_8);
+	try {
+		Files.move(tmp, path, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+	} catch (IOException atomicEx) {
+		// If atomic move not supported, fallback to non-atomic replace
+		Files.move(tmp, path, StandardCopyOption.REPLACE_EXISTING);
+	}
+}
+
+private static String csvEscape(String s) {
+    if (s == null) return "";
+    if (s.contains(",") || s.contains("\"") || s.contains("\n") || s.contains("\r")) {
+        return "\"" + s.replace("\"", "\"\"") + "\"";
+    }
+    return s;
+}
 
 }
