@@ -55,7 +55,6 @@
 
 /* Center login/create screens vertically and horizontally */
 .auth-view{
-  min-height: calc(100vh - 4rem);
   display: flex;
   align-items: center;
   justify-content: center;
