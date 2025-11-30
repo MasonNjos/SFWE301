@@ -45,7 +45,8 @@ public class BackendApplication {
 
 					// Process the data as needed
 					// store data in a list of Student objects
-					Student student = new Student(fName, lName, major, gpa, schoolYear, score);
+					// matchScore initialized to 0
+					Student student = new Student(fName, lName, major, gpa, schoolYear, score, 0);
 					students.add(student);
 
 				}
@@ -120,11 +121,13 @@ public class BackendApplication {
 			// raise score based on gpa - 1 pt for min, 2 points for every 0.5 above min or something along those lines
 			// if one requirement is not met score = 0
 			// calculate score for each student
+			
 			for (Student currStudent : students) {
 				int currScore = 0;		// calculate later
 				int matches = 0;
 				int scholarshipCount = scholarships.size();
-				
+				int currIndex = 0;
+
 				for (Scholarship currScholarship : scholarships) {
 					// check each requirement
 					boolean eligible = true;
@@ -146,12 +149,36 @@ public class BackendApplication {
 					// score logic probably can be somewhere here too but I just want to get matches for now
 					if (eligible) {
 						matches++;
+
+						// score logic
+						// add a point for every 0.1 above min gpa
+						int gpaPoints = (int)((studentGpa - minGpa) * 10.0);
+						currScore += gpaPoints;
+
+						// add points based on monetary value
+						// 1 point for every 1000 dollars
+						String amountStr = currScholarship.getAmount().replaceAll("[$,]", "");
+						try {
+							double amount = Double.parseDouble(amountStr);
+							int amountPoints = (int)(amount / 1000.0);
+							currScore += amountPoints;
+						} catch (NumberFormatException nfe) {
+							// invalid amount format, no points
+						}
+
+						
+
 	
 					} 
 					else {
 						// not eligible
 						// do not increment matches
+						currScore = 0;
 					}
+
+					// add current score to student object
+					currStudent.setMatchScore(currScore, currIndex);
+					currIndex++;
 
 				}
 				// calculate match %
@@ -168,7 +195,9 @@ public class BackendApplication {
 							", Major: " + currStudent.getMajor() +
 							", GPA: " + currStudent.getGpa() +
 							", Year: " + currStudent.getYear() + 
-							", Match %: " + currStudent.getScore());
+							", Match %: " + currStudent.getScore() +
+							", Match Scores: " + currStudent.getMatchScore()
+							);
 
 				}
 

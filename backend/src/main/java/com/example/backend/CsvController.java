@@ -1,12 +1,16 @@
 package com.example.backend;
 
-import com.opencsv.CSVReader;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.web.bind.annotation.*;
-
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.opencsv.CSVReader;
 
 @RestController
 @RequestMapping("/api")
@@ -29,7 +33,8 @@ public class CsvController {
                 String gpa = row.length>3?row[3]:"";
                 String year = row.length>4?row[4]:"";
                 String score = row.length>4?row[5]:"";
-                out.add(new Student(fn, ln, major, gpa, year, score));
+                int matchScore = row.length>6?Integer.parseInt(row[6]):0;
+                out.add(new Student(fn, ln, major, gpa, year, score, matchScore));
             }
             return out;
         }

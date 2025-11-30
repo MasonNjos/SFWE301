@@ -1,4 +1,6 @@
 package com.example.backend;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Student {
     private String firstName;
@@ -7,16 +9,19 @@ public class Student {
     private String gpa;
     private String year;
     private String score;
+    private List<Integer> matchScore = new ArrayList<>(); // used to rank scholarships
 
     public Student() {}
     // constructor
-    public Student(String firstName, String lastName, String major, String gpa, String year, String score) {
+    public Student(String firstName, String lastName, String major, 
+    String gpa, String year, String score, int matchScore) {
         this.firstName = firstName; 
         this.lastName = lastName;
         this.major = major; 
         this.gpa = gpa; 
         this.year = year;
         this.score = score;
+        this.matchScore.add(matchScore);
     }
     // getters + setters
     public String getFirstName(){return firstName;}
@@ -31,4 +36,6 @@ public class Student {
     public void setYear(String y){this.year=y;}
     public String getScore(){return score;}
     public void setScore(String s){this.score=s;}
+    public List<Integer> getMatchScore(){return matchScore;}
+    public void setMatchScore(int ms, int index){this.matchScore.add(index, ms);}
 }
