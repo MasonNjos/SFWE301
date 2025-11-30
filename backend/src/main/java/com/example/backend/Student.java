@@ -8,9 +8,13 @@ public class Student {
     private String year;
 
     public Student() {}
+    // constructor
     public Student(String firstName, String lastName, String major, String gpa, String year) {
-        this.firstName = firstName; this.lastName = lastName;
-        this.major = major; this.gpa = gpa; this.year = year;
+        this.firstName = firstName; 
+        this.lastName = lastName;
+        this.major = major; 
+        this.gpa = gpa; 
+        this.year = year;
     }
     // getters + setters
     public String getFirstName(){return firstName;}
