@@ -28,7 +28,8 @@ public class CsvController {
                 String major = row.length>2?row[2]:"";
                 String gpa = row.length>3?row[3]:"";
                 String year = row.length>4?row[4]:"";
-                out.add(new Student(fn, ln, major, gpa, year));
+                String score = row.length>4?row[5]:"";
+                out.add(new Student(fn, ln, major, gpa, year, score));
             }
             return out;
         }

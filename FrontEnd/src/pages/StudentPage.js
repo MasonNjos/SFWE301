@@ -6,6 +6,8 @@ function StudentPage(){
   const [scholarships, setScholarships] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [students, setStudents] = useState([]);
+  const [selectedStudentId, setSelectedStudentId] = useState('');
 
   useEffect(() => {
     const fetchScholarships = async () => {
@@ -33,6 +35,30 @@ function StudentPage(){
       }
     };
     fetchScholarships();
+    // fetch students as well
+    const fetchStudents = async () => {
+      try {
+        const res = await fetch('http://localhost:8080/api/students');
+        if (!res.ok) throw new Error('Failed to load students');
+        const data = await res.json();
+        // normalize: give each an id
+        const normalized = data.map((s, idx) => ({
+          id: s.id || idx+1,
+          firstName: s.firstName || s.first || '',
+          lastName: s.lastName || s.last || s.lastName || '',
+          major: s.major || '',
+          gpa: s.gpa || '' ,
+          year: s.year || '',
+          // student.csv 'score' column may be named score, match, or matchScore
+          score: s.score ?? s.match ?? s.matchScore ?? s.scoreValue ?? ''
+        }));
+        setStudents(normalized);
+        if(normalized.length>0) setSelectedStudentId(normalized[0].id);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchStudents();
   }, []);
 
   const handleSearchChange = (e) => setSearchQuery(e.target.value);
@@ -45,11 +71,28 @@ function StudentPage(){
     (scholarship.status || '').toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // selected student object
+  const selectedStudent = students.find(s => String(s.id) === String(selectedStudentId));
+  //TODO: matchRate should execute java backend to get real match rate
+  const matchRate = selectedStudent && selectedStudent.score !== '' && selectedStudent.score != null
+    ? (isNaN(parseFloat(selectedStudent.score)) ? String(selectedStudent.score) : Math.round(parseFloat(selectedStudent.score)))
+    : null;
+
   return (
     <div className="App">
       <main className='content'>
         <p><strong>Welcome to Scholar Cats!</strong></p>
         <p>Explore Scholarships tailored to your goals and achievements</p>
+        {/* Student selector */}
+        <div style={{margin: '12px 0'}}>
+          <label htmlFor="student-select" style={{marginRight:8}}>Viewing as:</label>
+          <select id="student-select" value={selectedStudentId} onChange={e => setSelectedStudentId(e.target.value)}>
+            {students.length === 0 && <option value="">(No students)</option>}
+            {students.map(s => (
+              <option key={s.id} value={s.id}>{s.firstName} {s.lastName} — {s.major} (GPA: {s.gpa})</option>
+            ))}
+          </select>
+        </div>
 
         <form onSubmit={handleSearchSubmit}>
           <input
@@ -73,7 +116,7 @@ function StudentPage(){
             <p>0</p>
           </div>
           <div className="Top-Box">Match Rate
-            <p>75% (insert java output here)</p>
+            <p>{selectedStudent ? `${matchRate}%` : '—'}</p>
           </div>
         </div>
 
