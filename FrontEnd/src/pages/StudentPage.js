@@ -41,6 +41,8 @@ function StudentPage(){
       }
     };
     fetchScholarships();
+    
+    
     // fetch students as well
     const fetchStudents = async () => {
       try {

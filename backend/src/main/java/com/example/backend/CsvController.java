@@ -1,6 +1,10 @@
 package com.example.backend;
 
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +23,10 @@ public class CsvController {
 
     @GetMapping("/students")
     public List<Student> getStudents() throws Exception {
-        ClassPathResource resource = new ClassPathResource("data/students.csv"); // put CSV under src/main/resources/data/students.csv
-        try (CSVReader reader = new CSVReader(new InputStreamReader(resource.getInputStream()))) {
+        Path p1 = Paths.get("student.csv");
+        CSVReader reader = null;
+        Reader r = Files.newBufferedReader(p1);
+        reader = new CSVReader(r);
             List<Student> out = new ArrayList<>();
             String[] row;
             boolean header = true;
@@ -38,12 +44,13 @@ public class CsvController {
             }
             return out;
         }
-    }
 
     @GetMapping("/scholarships")
     public List<Scholarship> getScholarships() throws Exception {
-        ClassPathResource resource = new ClassPathResource("data/scholarships.csv");
-        try (CSVReader reader = new CSVReader(new InputStreamReader(resource.getInputStream()))) {
+        Path p1 = Paths.get("scholarships.csv");
+        CSVReader reader = null;
+        Reader r = Files.newBufferedReader(p1);
+        reader = new CSVReader(r);
             List<Scholarship> out = new ArrayList<>();
             String[] row;
             boolean header = true;
@@ -61,6 +68,5 @@ public class CsvController {
                 out.add(new Scholarship(id, name, status, amount, deadline, major, gpa, year, ps));
             }
             return out;
-        }
     }
 }
