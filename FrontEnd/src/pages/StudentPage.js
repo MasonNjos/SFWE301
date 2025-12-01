@@ -1,5 +1,5 @@
 import './styles/StudentPage.css';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 function StudentPage(){
   const [searchQuery, setSearchQuery] = useState('');
@@ -13,6 +13,10 @@ function StudentPage(){
   const [chatOpen, setChatOpen] = useState(false);
   const [chatInput, setChatInput] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [applicationsCount, setApplicationsCount] = useState(0);
+  const [submitMessage, setSubmitMessage] = useState('');
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     const fetchScholarships = async () => {
@@ -81,7 +85,8 @@ function StudentPage(){
 
   // selected student object
   const selectedStudent = students.find(s => String(s.id) === String(selectedStudentId));
-  //TODO: matchRate should execute java backend to get real match rate
+
+  
   const matchRate = selectedStudent && selectedStudent.score !== '' && selectedStudent.score != null
     ? (isNaN(parseFloat(selectedStudent.score)) ? String(selectedStudent.score) : Math.round(parseFloat(selectedStudent.score)))
     : null;
@@ -101,19 +106,65 @@ function StudentPage(){
             <hr />
             <p><strong>Personal statement / question</strong></p>
             {String(selectedScholarship.ps).trim().toLowerCase() === 'yes' ? (
-            <textarea
-              className="personal-statement-box"
-              placeholder="Enter your personal statement here..."
-              value={userPersonalStatement}
-              onChange={(e) => setUserPersonalStatement(e.target.value)}
-              rows={6}
-              style={{ width: "100%", padding: "10px" }}
-            />
-          ) : (
-            <p style={{ whiteSpace: "pre-wrap" }}>
-              {'No personal statement question provided.'}
-            </p>
-)}
+              <div>
+                <textarea
+                  className="personal-statement-box"
+                  placeholder="Enter your personal statement here..."
+                  value={userPersonalStatement}
+                  onChange={(e) => setUserPersonalStatement(e.target.value)}
+                  rows={6}
+                  style={{ width: "100%", padding: "10px" }}
+                />
+                <input ref={fileInputRef} type="file" style={{display:'none'}} onChange={(e)=>{
+                  const f = e.target.files && e.target.files[0];
+                  if(f) setUploadedFile({name: f.name, size: f.size});
+                }} />
+                <div
+                  className="upload-dropzone"
+                  onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                  onDragOver={(e)=>{ e.preventDefault(); e.stopPropagation(); e.dataTransfer.dropEffect = 'copy'; e.currentTarget.classList.add('dragover'); }}
+                  onDragLeave={(e)=>{ e.currentTarget.classList.remove('dragover'); }}
+                  onDrop={(e)=>{ e.preventDefault(); e.stopPropagation(); e.currentTarget.classList.remove('dragover'); const f = e.dataTransfer.files && e.dataTransfer.files[0]; if(f) setUploadedFile({name: f.name, size: f.size}); }}
+                >
+                  <div style={{pointerEvents:'none'}}>Drop file here or click to choose</div>
+                </div>
+                {uploadedFile && <div className='file-name' style={{marginTop:8}}>{uploadedFile.name}</div>}
+              </div>
+            ) : (
+              <p style={{ whiteSpace: "pre-wrap" }}>
+                {'No personal statement question provided.'}
+              </p>
+            )}
+
+            <div className='detail-footer'>
+              <div style={{display:'flex', alignItems:'center', gap:12}}>
+                {/* left slot can show status or uploaded file */}
+                {String(selectedScholarship.ps).trim().toLowerCase() === 'yes' && uploadedFile && (
+                  <div className='file-name'>{uploadedFile.name}</div>
+                )}
+              </div>
+              <div>
+                {/* submit button moved to fixed position on the left side of the screen */}
+              </div>
+            </div>
+            {/* fixed submit button on bottom-left while detail is open */}
+            <button className='submit-fixed-left' onClick={() => {
+              const needsPs = String(selectedScholarship.ps || '').trim().toLowerCase() === 'yes';
+              if(needsPs && !userPersonalStatement && !uploadedFile){
+                setSubmitMessage('Please provide a personal statement or upload a document before submitting.');
+                return;
+              }
+              // mark scholarship as submitted so user cannot view it again
+              const idToMark = selectedScholarship.id;
+              setScholarships(prev => prev.map(s => (String(s.id) === String(idToMark) ? {...s, status: 'submitted'} : s)));
+              setApplicationsCount(c => c + 1);
+              setSubmitMessage('Application submitted.');
+              setUserPersonalStatement('');
+              setUploadedFile(null);
+              // close detail view after submit
+              setSelectedScholarship(null);
+            }}>Submit Application</button>
+            {submitMessage && <div style={{marginTop:8, color:'#064e3b'}}>{submitMessage}</div>}
           </div>
         </main>
       </div>
@@ -145,8 +196,7 @@ function StudentPage(){
               setChatInput('');
               //automatic reponse
               setTimeout(() => {
-                const lower = userMsg.text.toLowerCase();
-                let reply = "Sorry, I don't know that yet. Try asking about deadlines or how to apply.";
+                let reply = "This is a demo response. More help topics coming soon!";
                 setChatMessages(prev => [...prev, {role:'assistant', text: reply}]);
               }, 400);
             }}>Send</button>
@@ -186,7 +236,7 @@ function StudentPage(){
             <p>{scholarships.length}</p>
           </div>
           <div className="Top-Box">Your Applications
-            <p>0</p>
+            <p>{applicationsCount}</p>
           </div>
           <div className="Top-Box">Match Rate
             <p>{selectedStudent ? `${matchRate}%` : '—'}</p>
@@ -195,7 +245,7 @@ function StudentPage(){
 
         <p>Available Scholarships {searchQuery && `(${filteredScholarships.length} results)`}</p>
 
-        <div className="Scholarship-list">
+            <div className="Scholarship-list">
           {filteredScholarships.length > 0 ? (
             filteredScholarships.map(scholarship => (
               <div className="Scholarship" key={scholarship.id}>
@@ -204,10 +254,16 @@ function StudentPage(){
                   <span className={`status-badge ${scholarship.status}`}>
                     {scholarship.status === 'open' ? 'Open' : 
                      scholarship.status === 'closed' ? 'Closed' : 
-                     'Closing Soon'}
+                     scholarship.status === 'soon' ? 'Closing Soon' : 
+                     scholarship.status === 'submitted' ? 'Submitted' : 
+                     scholarship.status}
                   </span>
                 )}
-                <button onClick={() => setSelectedScholarship(scholarship)} className='scholar-ship-button'>View</button>
+                {scholarship.status === 'submitted' ? (
+                  <button className='scholar-ship-button' disabled style={{opacity:0.7, cursor:'default'}}>View</button>
+                ) : (
+                  <button onClick={() => setSelectedScholarship(scholarship)} className='scholar-ship-button'>View</button>
+                )}
                 <div className='money-info'>{scholarship.amount}</div>
                 <div className='date-info'>{scholarship.deadline}</div>
               </div>
