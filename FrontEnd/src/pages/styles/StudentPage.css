@@ -148,3 +148,57 @@
   .Scholarship{padding:1rem}
 }
 
+/* Help/chat floating button */
+.help-button{
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #001148;
+  color: white;
+  font-size: 15px;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.chat-panel{
+  position: fixed;
+  right: 20px;
+  bottom: 90px;
+  width: 320px;
+  max-height: 60vh;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(2,6,23,0.18);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.chat-header{
+  padding: 10px 12px;
+  background: #001148;
+  color: white;
+  font-weight: 700;
+}
+.chat-messages{
+  padding: 10px;
+  overflow: auto;
+  flex: 1 1 auto;
+  background: #f7fafc;
+}
+.chat-input-row{
+  display:flex;
+  gap:8px;
+  padding:10px;
+  border-top:1px solid #eee;
+}
+.chat-input-row input{flex:1;padding:8px;border-radius:6px;border:1px solid #ddd}
+.chat-message{margin-bottom:8px}
+.chat-message.user{ text-align:right }
+.chat-message.assistant{ text-align:left }
+.chat-message .bubble{ display:inline-block;padding:8px 10px;border-radius:8px;max-width:85%; }
+.chat-message.user .bubble{background:#001148;color:white}
+.chat-message.assistant .bubble{background:#fff;border:1px solid #e6e6e6}

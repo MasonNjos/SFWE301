@@ -10,6 +10,9 @@ function StudentPage(){
   const [selectedStudentId, setSelectedStudentId] = useState('');
   const [selectedScholarship, setSelectedScholarship] = useState(null);
   const [userPersonalStatement, setUserPersonalStatement] = useState('');
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatInput, setChatInput] = useState('');
+  const [chatMessages, setChatMessages] = useState([]);
 
   useEffect(() => {
     const fetchScholarships = async () => {
@@ -115,8 +118,39 @@ function StudentPage(){
     );
   }
 
+  // Help button for students
   return (
     <div className="App">
+      {/* Help / chat floating button and panel */}
+      <button className="help-button" title="Help" onClick={() => setChatOpen(o => !o)}>?</button>
+      {chatOpen && (
+        <div className="chat-panel">
+          <div className="chat-header">Help Chat</div>
+          <div className="chat-messages">
+            {chatMessages.length === 0 && <div style={{color:'#666'}}>Hi — ask me about scholarships or how to apply.</div>}
+            {chatMessages.map((m, i) => (
+              <div key={i} className={`chat-message ${m.role}`}>
+                <div className="bubble">{m.text}</div>
+              </div>
+            ))}
+          </div>
+          <div className="chat-input-row">
+            <input value={chatInput} onChange={e=>setChatInput(e.target.value)} placeholder="Type a question..." />
+            <button onClick={() => {
+              if(!chatInput.trim()) return;
+              const userMsg = {role: 'user', text: chatInput.trim()};
+              setChatMessages(prev => [...prev, userMsg]);
+              setChatInput('');
+              //automatic reponse
+              setTimeout(() => {
+                const lower = userMsg.text.toLowerCase();
+                let reply = "Sorry, I don't know that yet. Try asking about deadlines or how to apply.";
+                setChatMessages(prev => [...prev, {role:'assistant', text: reply}]);
+              }, 400);
+            }}>Send</button>
+          </div>
+        </div>
+      )}
       <main className='content'>
         <p><strong>Welcome to Scholar Cats!</strong></p>
         <p>Explore Scholarships tailored to your goals and achievements</p>
