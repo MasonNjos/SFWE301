@@ -77,14 +77,6 @@ function StudentPage(){
 
   const handleSearchChange = (e) => setSearchQuery(e.target.value);
   const handleSearchSubmit = (e) => e.preventDefault();
-
-  const filteredScholarships = scholarships.filter(scholarship =>
-    scholarship.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (scholarship.amount || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (scholarship.deadline || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (scholarship.status || '').toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   // selected student object
   const selectedStudent = students.find(s => String(s.id) === String(selectedStudentId));
 
@@ -93,31 +85,45 @@ function StudentPage(){
     ? (isNaN(parseFloat(selectedStudent.score)) ? String(selectedStudent.score) : Math.round(parseFloat(selectedStudent.score)))
     : null;
 
-  // Build a display list that filters out scholarships with a matchScore of 0
-  // and sorts remaining scholarships by matchScore descending. If the
-  // selected student has no matchScore data, fall back to the normal
-  // filtered list.
-  const displayScholarships = React.useMemo(() => {
+  const matchedScholarships = React.useMemo(() => {
     if (!selectedStudent || !Array.isArray(selectedStudent.matchScore) || selectedStudent.matchScore.length === 0) {
-      return filteredScholarships;
+      // No match data: treat every scholarship as potentially matched (score 0)
+      return scholarships.map((sch, idx) => ({ ...sch, __matchScore: 0, __origIndex: idx }));
     }
 
     const ms = selectedStudent.matchScore;
-
-    return filteredScholarships
+    return scholarships
       .map((sch, idx) => {
-        // Prefer using the scholarship's array index as the matchScore index.
-        // If that isn't present, and the scholarship id is numeric, try using id as index.
         let score = 0;
         if (ms.length > idx && ms[idx] != null) score = Number(ms[idx]);
         else if (!isNaN(Number(sch.id)) && ms.length > Number(sch.id)) score = Number(ms[Number(sch.id)]);
         if (isNaN(score)) score = 0;
-        return {...sch, __matchScore: score, __origIndex: idx};
+        return { ...sch, __matchScore: score, __origIndex: idx };
       })
-      .filter(s => Number(s.__matchScore) > 0)
-      .sort((a,b) => Number(b.__matchScore) - Number(a.__matchScore));
-  }, [filteredScholarships, selectedStudent]);
+      .filter(s => Number(s.__matchScore) > 0 || (Array.isArray(selectedStudent.matchScore) && selectedStudent.matchScore.length === 0));
+  }, [scholarships, selectedStudent]);
 
+  const displayScholarships = React.useMemo(() => {
+    const q = (searchQuery || '').trim().toLowerCase();
+    const matches = (val) => (val || '').toString().toLowerCase().includes(q);
+    const base = matchedScholarships;
+    const searched = q
+      ? base.filter(sch =>
+          matches(sch.name) ||
+          matches(sch.amount) ||
+          matches(sch.deadline) ||
+          matches(sch.status) ||
+          matches(sch.major) ||
+          matches(sch.gpa) ||
+          matches(sch.year) ||
+          matches(sch.ps)
+        )
+      : base;
+    // sort by match score descending when available
+    return searched.slice().sort((a, b) => Number(b.__matchScore || 0) - Number(a.__matchScore || 0));
+  }, [matchedScholarships, searchQuery]);
+
+   
   // If a scholarship is selected, show a simple detail page and stop rendering the list
   if (selectedScholarship) {
     return (
@@ -305,7 +311,7 @@ function StudentPage(){
               color: '#666',
               fontSize: '1.1rem'
             }}>
-              No scholarships found matching "{searchQuery}"
+              No scholarships available
             </div>
           )}
         </div>
