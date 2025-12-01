@@ -115,6 +115,9 @@
 .status-badge.closed{background: rgba(99,102,241,0.12); color: #4f46e5; font-weight:700; border: 1px solid rgba(79,70,229,0.12);}
 .status-badge.soon{background: var(--soon); color: #4a2e00;}
 
+/* Submitted badge style */
+.status-badge.submitted{background: #6b7280; color: #fff; font-weight:700; border: 1px solid rgba(0,0,0,0.06);} 
+
 /* Action button */
 .scholar-ship-button{
   margin-left: 10px;
@@ -163,7 +166,7 @@
   padding: 0.5rem 1rem;
   border-radius: 8px;
   cursor: pointer;
-  z-index: 99999 !important;
+  z-index: 99999 !important; /* stops overlapping issues */
   pointer-events: auto;
 }
 
@@ -207,3 +210,63 @@
 .chat-message .bubble{ display:inline-block;padding:8px 10px;border-radius:8px;max-width:85%; }
 .chat-message.user .bubble{background:#001148;color:white}
 .chat-message.assistant .bubble{background:#fff;border:1px solid #e6e6e6}
+
+/* small file name display for uploads */
+.file-name{font-size:0.9rem;color:#333}
+.personal-statement-box{min-height:120px;border-radius:8px;border:1px solid #ddd}
+
+/* Actions in scholarship detail view */
+.detail-actions{
+  margin-top:12px;
+  display:flex;
+  gap:16px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+.detail-actions .scholar-ship-button{
+  left: 20px;
+  bottom: 90px;
+  padding:8px 12px}
+.file-name{margin-left:8px}
+
+/* Scholarship detail layout: ensure footer sticks to bottom and provides left/right slots */
+.Scholarship-Detail{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  min-height:360px;
+}
+.upload-dropzone{
+  border: 2px dashed #cbd5e1;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  color: #334155;
+  cursor: pointer;
+}
+.upload-dropzone.dragover{ background: #eef2ff; border-color: #6366f1 }
+.detail-footer{
+  margin-top: 12px;
+  margin-bottom: 4px;
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.detail-footer .scholar-ship-button{ padding: 10px 14px }
+
+/* Fixed submit button positioned bottom-left while detail view is open */
+.submit-fixed-left{
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  background: #f30107;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  z-index: 100000; /* above most UI elements */
+}
+.submit-fixed-left:hover{ transform: translateY(-3px); }
