@@ -16,7 +16,26 @@ function StudentPage(){
   const [uploadedFile, setUploadedFile] = useState(null);
   const [applicationsCount, setApplicationsCount] = useState(0);
   const [submitMessage, setSubmitMessage] = useState('');
+  const [profileDraft, setProfileDraft] = useState(null);
+  const [resumeFile, setResumeFile] = useState(null);
+  const [profileMessage, setProfileMessage] = useState('');
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
   const fileInputRef = useRef(null);
+
+  // sync profileDraft when selected student changes
+  useEffect(() => {
+    if (!selectedStudent) { setProfileDraft(null); setResumeFile(null); return; }
+    setProfileDraft({
+      id: selectedStudent.id,
+      firstName: selectedStudent.firstName || '',
+      lastName: selectedStudent.lastName || '',
+      major: selectedStudent.major || '',
+      gpa: selectedStudent.gpa || '',
+      year: selectedStudent.year || ''
+    });
+    setResumeFile(null);
+    setProfileMessage('');
+  }, [selectedStudentId]);
 
   useEffect(() => {
     const fetchScholarships = async () => {
@@ -77,6 +96,34 @@ function StudentPage(){
 
   const handleSearchChange = (e) => setSearchQuery(e.target.value);
   const handleSearchSubmit = (e) => e.preventDefault();
+  const handleProfileChange = (field, value) => setProfileDraft(d => ({...d, [field]: value}));
+  const handleResumeChange = (e) => {
+    const f = e.target.files && e.target.files[0];
+    if (f) setResumeFile({name: f.name, size: f.size});
+  };
+  const saveProfile = () => {
+    if (!profileDraft) return;
+    setStudents(prev => prev.map(s => (String(s.id) === String(profileDraft.id) ? {...s, major: profileDraft.major, gpa: profileDraft.gpa, year: profileDraft.year} : s)));
+    setProfileMessage('Profile saved locally.');
+    // keep resumeFile in UI only (no upload)
+    setTimeout(()=>setProfileMessage(''), 3000);
+    setProfileModalOpen(false);
+  };
+  const cancelProfile = () => {
+    if (!selectedStudent) return;
+    setProfileDraft({
+      id: selectedStudent.id,
+      firstName: selectedStudent.firstName || '',
+      lastName: selectedStudent.lastName || '',
+      major: selectedStudent.major || '',
+      gpa: selectedStudent.gpa || '',
+      year: selectedStudent.year || ''
+    });
+    setResumeFile(null);
+    setProfileMessage('Edits canceled');
+    setTimeout(()=>setProfileMessage(''), 1600);
+    setProfileModalOpen(false);
+  };
   // selected student object
   const selectedStudent = students.find(s => String(s.id) === String(selectedStudentId));
 
@@ -237,10 +284,18 @@ function StudentPage(){
         </div>
       )}
       <main className='content'>
+        {/* Edit Profile button*/}
+        <div style={{position: 'absolute', top: '55px', left: '250px', zIndex: 900, fontsize: '14px'}}>
+          <button className='scholar-ship-button edit-profile-button' onClick={() => setProfileModalOpen(true)} style={{padding: '0.5rem 1px', whiteSpace: 'nowrap', fontSize: '9px'}}>
+            Edit Profile
+          </button>
+        </div>
+
         <p><strong>Welcome to Scholar Cats!</strong></p>
         <p>Explore Scholarships tailored to your goals and achievements</p>
+        
         {/* Student selector */}
-        <div style={{margin: '12px 0'}}>
+        <div style={{margin: '12px 0', display:'flex', alignItems:'center', gap:12}}>
           <label htmlFor="student-select" style={{marginRight:8}}>Viewing as:</label>
           <select id="student-select" value={selectedStudentId} onChange={e => setSelectedStudentId(e.target.value)}>
             {students.length === 0 && <option value="">(No students)</option>}
@@ -248,7 +303,45 @@ function StudentPage(){
               <option key={s.id} value={s.id}>{s.firstName} {s.lastName} — {s.major} (GPA: {s.gpa})</option>
             ))}
           </select>
+          {profileDraft && <div style={{color:'#444'}}>Viewing as: {profileDraft.firstName} {profileDraft.lastName}</div>}
         </div>
+
+        {profileModalOpen && profileDraft && (
+          <div style={{position:'fixed', inset:0, background:'rgba(0,0,0,0.45)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:100000}}>
+            <div style={{width:720, maxWidth:'96%', background:'#fff', borderRadius:10, padding:20}}>
+              <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8}}>
+                <h3 style={{margin:0}}>Edit Your Profile</h3>
+                <button onClick={() => setProfileModalOpen(false)} style={{border:'none', background:'transparent', fontSize:18, cursor:'pointer'}}>✕</button>
+              </div>
+              <div style={{display:'flex', gap:12, flexWrap:'wrap'}}>
+                <div style={{flex:'1 1 220px'}}>
+                  <label style={{fontSize:12}}>Major</label>
+                  <input value={profileDraft.major} onChange={e=>handleProfileChange('major', e.target.value)} style={{width:'100%', padding:8, borderRadius:6, border:'1px solid #ddd'}} />
+                </div>
+                <div style={{width:120}}>
+                  <label style={{fontSize:12}}>GPA</label>
+                  <input value={profileDraft.gpa} onChange={e=>handleProfileChange('gpa', e.target.value)} style={{width:'100%', padding:8, borderRadius:6, border:'1px solid #ddd'}} />
+                </div>
+                <div style={{width:160}}>
+                  <label style={{fontSize:12}}>Year</label>
+                  <input value={profileDraft.year} onChange={e=>handleProfileChange('year', e.target.value)} style={{width:'100%', padding:8, borderRadius:6, border:'1px solid #ddd'}} />
+                </div>
+                <div style={{flex:'0 0 220px'}}>
+                  <label style={{fontSize:12}}>Resume (optional)</label>
+                  <div style={{display:'flex', gap:8, alignItems:'center'}}>
+                    <input type="file" onChange={handleResumeChange} />
+                  </div>
+                  {resumeFile && <div style={{fontSize:12, marginTop:6}}>{resumeFile.name}</div>}
+                </div>
+              </div>
+              <div style={{marginTop:12, display:'flex', gap:8, justifyContent:'flex-end', alignItems:'center'}}>
+                {profileMessage && <div style={{marginRight:'auto', color:'#064e3b'}}>{profileMessage}</div>}
+                <button className='scholar-ship-button' onClick={saveProfile}>Save</button>
+                <button className='scholar-ship-button' style={{background:'#6b7280', fontSize: '12px'}} onClick={cancelProfile}>Cancel</button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleSearchSubmit}>
           <input
