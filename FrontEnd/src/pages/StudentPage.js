@@ -62,7 +62,9 @@ function StudentPage(){
           gpa: s.gpa || '' ,
           year: s.year || '',
           // student.csv 'score' column may be named score, match, or matchScore
-          score: s.score ?? s.match ?? s.matchScore ?? s.scoreValue ?? ''
+          score: s.score ?? s.match ?? s.matchScore ?? s.scoreValue ?? '',
+          // preserve any matchScore array from backend (try several possible property names)
+          matchScore: s.matchScore ?? s.matchScores ?? s.match_scores ?? s.match_list ?? []
         }));
         setStudents(normalized);
         if(normalized.length>0) setSelectedStudentId(normalized[0].id);
@@ -90,6 +92,31 @@ function StudentPage(){
   const matchRate = selectedStudent && selectedStudent.score !== '' && selectedStudent.score != null
     ? (isNaN(parseFloat(selectedStudent.score)) ? String(selectedStudent.score) : Math.round(parseFloat(selectedStudent.score)))
     : null;
+
+  // Build a display list that filters out scholarships with a matchScore of 0
+  // and sorts remaining scholarships by matchScore descending. If the
+  // selected student has no matchScore data, fall back to the normal
+  // filtered list.
+  const displayScholarships = React.useMemo(() => {
+    if (!selectedStudent || !Array.isArray(selectedStudent.matchScore) || selectedStudent.matchScore.length === 0) {
+      return filteredScholarships;
+    }
+
+    const ms = selectedStudent.matchScore;
+
+    return filteredScholarships
+      .map((sch, idx) => {
+        // Prefer using the scholarship's array index as the matchScore index.
+        // If that isn't present, and the scholarship id is numeric, try using id as index.
+        let score = 0;
+        if (ms.length > idx && ms[idx] != null) score = Number(ms[idx]);
+        else if (!isNaN(Number(sch.id)) && ms.length > Number(sch.id)) score = Number(ms[Number(sch.id)]);
+        if (isNaN(score)) score = 0;
+        return {...sch, __matchScore: score, __origIndex: idx};
+      })
+      .filter(s => Number(s.__matchScore) > 0)
+      .sort((a,b) => Number(b.__matchScore) - Number(a.__matchScore));
+  }, [filteredScholarships, selectedStudent]);
 
   // If a scholarship is selected, show a simple detail page and stop rendering the list
   if (selectedScholarship) {
@@ -233,7 +260,7 @@ function StudentPage(){
 
         <div className="Top-Horziontal-Boxes">
           <div className="Top-Box">Total Available
-            <p>{scholarships.length}</p>
+            <p>{displayScholarships.length}</p>
           </div>
           <div className="Top-Box">Your Applications
             <p>{applicationsCount}</p>
@@ -243,11 +270,11 @@ function StudentPage(){
           </div>
         </div>
 
-        <p>Available Scholarships {searchQuery && `(${filteredScholarships.length} results)`}</p>
+        <p>Available Scholarships {searchQuery && `(${displayScholarships.length} results)`}</p>
 
             <div className="Scholarship-list">
-          {filteredScholarships.length > 0 ? (
-            filteredScholarships.map(scholarship => (
+          {displayScholarships.length > 0 ? (
+            displayScholarships.map(scholarship => (
               <div className="Scholarship" key={scholarship.id}>
                 <p>{scholarship.name}</p>
                 {scholarship.status && (
@@ -266,6 +293,9 @@ function StudentPage(){
                 )}
                 <div className='money-info'>{scholarship.amount}</div>
                 <div className='date-info'>{scholarship.deadline}</div>
+                {scholarship.__matchScore != null && (
+                  <div style={{fontSize:12, color:'#444', marginTop:6}}>Match: {scholarship.__matchScore}</div>
+                )}
               </div>
             ))
           ) : (

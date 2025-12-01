@@ -49,7 +49,7 @@ public class BackendApplication {
 					// Process the data as needed
 					// store data in a list of Student objects
 					// matchScore initialized to 0
-					Student student = new Student(fName, lName, major, gpa, schoolYear, score, 0);
+					Student student = new Student(fName, lName, major, gpa, schoolYear, score, null);
 					students.add(student);
 
 				}
@@ -140,6 +140,9 @@ public class BackendApplication {
 					boolean eligible = true;
 					double studentGpa = Double.parseDouble(currStudent.getGpa());
 					double minGpa = Double.parseDouble(currScholarship.getGpa());
+
+					// SORT CSV BY MATCH SCORE WHEN OUTPUTTING TO CSV
+
 					// major
 					if (!(currScholarship.getMajor().equals(currStudent.getMajor()))) {
 						eligible = false;
@@ -195,7 +198,7 @@ public class BackendApplication {
 
 				// test reading file by outputting each line
 		// DELETE LATER JUST FOR DEBUGGING
-		/*
+		
 				for (Student currStudent : students) {
 					System.out.println("Student: " + currStudent.getFirstName() + " " + currStudent.getLastName() +
 							", Major: " + currStudent.getMajor() +
@@ -206,7 +209,7 @@ public class BackendApplication {
 							);
 
 				}
-				*/
+				
 
 
 
@@ -220,95 +223,127 @@ public class BackendApplication {
 
 			// student matching (based on score)
 			// sort scholarships by score (high to low)
-
-			// eligibility filtering (if score == 0) don't show 
-
-
-		// match %
-			// eligibleScholarships/totalScholarships * 100 %
-
-		// add match rate to student.csv
+			// sort scholarships.csv based on each student's match score list
+			// don't display 0 score scholarships
 			
-			// write scores back to CSV (safe overwrite)
-			try {
-				writeScoresToCsv(Paths.get("student.csv"), students, "Score");
-			} catch (IOException e) {
-				System.out.println("Failed to write scores to CSV: " + e.getMessage());
-			}
+		// write scores back to CSV (safe overwrite)
+		try {
+			writeScoresToCsv(Paths.get("student.csv"), students);
+		} catch (IOException e) {
+			System.out.println("Failed to write scores to CSV: " + e.getMessage());
+		}	}
+
+	// Write student scores and matchScores back into the CSV file.
+	// - path: Path to students CSV
+	// - students: List<Student> where Student.getScore() returns the match percent string
+	//   and Student.getMatchScore() returns a List<Integer>
+	private static void writeScoresToCsv(Path path, List<Student> students) throws IOException {
+		List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
+		if (lines.isEmpty()) return;
+
+		String header = lines.get(0);
+		String[] headerCols = header.split(",", -1);
+
+		int scoreIdx = -1;
+		int matchScoreIdx = -1;
 		
+		// Find existing Score and matchScore columns
+		for (int i = 0; i < headerCols.length; i++) {
+			if (headerCols[i].trim().equalsIgnoreCase("score")) { 
+				scoreIdx = i; 
+			}
+			if (headerCols[i].trim().equalsIgnoreCase("matchScore")) { 
+				matchScoreIdx = i; 
+			}
+		}
+
+		// Track if we need to append new columns
+		boolean appendedScore = false;
+		boolean appendedMatchScore = false;
+		
+		if (scoreIdx == -1) {
+			appendedScore = true;
+			header = header + ",score";
+		}
+		if (matchScoreIdx == -1) {
+			appendedMatchScore = true;
+			header = header + ",matchScore";
+		}
+
+		List<String> out = new ArrayList<>();
+		out.add(header);
+
+		int rowCount = Math.max(lines.size() - 1, students.size());
+		for (int i = 0; i < rowCount; i++) {
+			String origLine = (i + 1 < lines.size()) ? lines.get(i + 1) : "";
+			String[] cols = origLine.isEmpty() ? new String[0] : origLine.split(",", -1);
+
+			String scoreVal = (i < students.size()) ? students.get(i).getScore() : "";
+			
+			// Convert matchScore list to comma-separated string
+			String matchScoreVal = "";
+			if (i < students.size()) {
+				List<Integer> matchScores = students.get(i).getMatchScore();
+				if (matchScores != null && !matchScores.isEmpty()) {
+					StringBuilder sb = new StringBuilder();
+					for (int j = 0; j < matchScores.size(); j++) {
+						if (j > 0) sb.append(",");
+						sb.append(matchScores.get(j));
+					}
+					matchScoreVal = sb.toString();
+				}
+			}
+
+			// Rebuild the line with both score and matchScore
+			if (appendedScore && appendedMatchScore) {
+				// Both columns are appended at the end
+				String newLine = origLine.isEmpty() ? 
+					csvEscape(scoreVal) + "," + csvEscape(matchScoreVal) : 
+					origLine + "," + csvEscape(scoreVal) + "," + csvEscape(matchScoreVal);
+				out.add(newLine);
+			} else if (appendedScore) {
+				// Only score appended
+				String newLine = origLine.isEmpty() ? 
+					csvEscape(scoreVal) : 
+					origLine + "," + csvEscape(scoreVal);
+				out.add(newLine);
+			} else if (appendedMatchScore) {
+				// Only matchScore appended
+				String newLine = origLine.isEmpty() ? 
+					csvEscape(matchScoreVal) : 
+					origLine + "," + csvEscape(matchScoreVal);
+				out.add(newLine);
+			} else {
+				// Both columns exist, update them in place
+				String[] newCols = Arrays.copyOf(cols, headerCols.length);
+				for (int k = 0; k < newCols.length; k++) if (newCols[k] == null) newCols[k] = "";
+				
+				if (scoreIdx >= 0) newCols[scoreIdx] = scoreVal;
+				if (matchScoreIdx >= 0) newCols[matchScoreIdx] = matchScoreVal;
+				
+				StringBuilder sb = new StringBuilder();
+				for (int k = 0; k < newCols.length; k++) {
+					if (k > 0) sb.append(',');
+					sb.append(csvEscape(newCols[k]));
+				}
+				out.add(sb.toString());
+			}
+		}
+
+		Path parent = path.toAbsolutePath().getParent();
+		if (parent == null) {
+			// when path has no parent (e.g. running with relative single-name file), use working dir
+			parent = Paths.get(System.getProperty("user.dir")).toAbsolutePath();
+		}
+		Path tmp = Files.createTempFile(parent, "student-", ".csv");
+		Files.write(tmp, out, StandardCharsets.UTF_8);
+		try {
+			Files.move(tmp, path, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+		} catch (IOException atomicEx) {
+			// If atomic move not supported, fallback to non-atomic replace
+			Files.move(tmp, path, StandardCopyOption.REPLACE_EXISTING);
+		}
 	}
-
-	// Write student scores back into the CSV file.
-// - path: Path to students CSV
-// - students: List<Student> where Student.getScore() returns the match percent string
-// - scoreHeader: column name to update (e.g. "Score")
-private static void writeScoresToCsv(Path path, List<Student> students, String scoreHeader) throws IOException {
-    List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
-    if (lines.isEmpty()) return;
-
-    String header = lines.get(0);
-    String[] headerCols = header.split(",", -1);
-
-    int scoreIdx = -1;
-    for (int i = 0; i < headerCols.length; i++) {
-        if (headerCols[i].trim().equalsIgnoreCase(scoreHeader)) { scoreIdx = i; break; }
-    }
-
-    boolean appendedScore = false;
-    if (scoreIdx == -1) {
-        appendedScore = true;
-        header = header + "," + scoreHeader;
-    }
-
-    List<String> out = new ArrayList<>();
-    out.add(header);
-
-    int rowCount = Math.max(lines.size() - 1, students.size());
-    for (int i = 0; i < rowCount; i++) {
-        String origLine = (i + 1 < lines.size()) ? lines.get(i + 1) : "";
-        String[] cols = origLine.isEmpty() ? new String[0] : origLine.split(",", -1);
-
-        if (appendedScore) {
-            String scoreVal = (i < students.size()) ? students.get(i).getScore() : "";
-            String newLine = origLine.isEmpty() ? csvEscape(scoreVal) : origLine + "," + csvEscape(scoreVal);
-            out.add(newLine);
-        } else {
-            if (cols.length <= scoreIdx) {
-                String[] newCols = Arrays.copyOf(cols, headerCols.length);
-                for (int k = 0; k < newCols.length; k++) if (newCols[k] == null) newCols[k] = "";
-                newCols[scoreIdx] = (i < students.size()) ? students.get(i).getScore() : "";
-                StringBuilder sb = new StringBuilder();
-                for (int k = 0; k < newCols.length; k++) {
-                    if (k > 0) sb.append(',');
-                    sb.append(csvEscape(newCols[k]));
-                }
-                out.add(sb.toString());
-            } else {
-                cols[scoreIdx] = (i < students.size()) ? students.get(i).getScore() : "";
-                StringBuilder sb = new StringBuilder();
-                for (int k = 0; k < cols.length; k++) {
-                    if (k > 0) sb.append(',');
-                    sb.append(csvEscape(cols[k]));
-                }
-                out.add(sb.toString());
-            }
-        }
-    }
-
-	Path parent = path.toAbsolutePath().getParent();
-	if (parent == null) {
-		// when path has no parent (e.g. running with relative single-name file), use working dir
-		parent = Paths.get(System.getProperty("user.dir")).toAbsolutePath();
-	}
-	Path tmp = Files.createTempFile(parent, "student-", ".csv");
-	Files.write(tmp, out, StandardCharsets.UTF_8);
-	try {
-		Files.move(tmp, path, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
-	} catch (IOException atomicEx) {
-		// If atomic move not supported, fallback to non-atomic replace
-		Files.move(tmp, path, StandardCopyOption.REPLACE_EXISTING);
-	}
-}
 
 private static String csvEscape(String s) {
     if (s == null) return "";

@@ -12,7 +12,7 @@ public class Student {
     private List<Integer> matchScore = new ArrayList<>(); // used to rank scholarships
 
     public Student() {}
-    // constructor
+    // constructor (single matchScore int)
     public Student(String firstName, String lastName, String major, 
     String gpa, String year, String score, int matchScore) {
         this.firstName = firstName; 
@@ -22,6 +22,18 @@ public class Student {
         this.year = year;
         this.score = score;
         this.matchScore.add(matchScore);
+    }
+    
+    // constructor (matchScore list)
+    public Student(String firstName, String lastName, String major, 
+    String gpa, String year, String score, List<Integer> matchScore) {
+        this.firstName = firstName; 
+        this.lastName = lastName;
+        this.major = major; 
+        this.gpa = gpa; 
+        this.year = year;
+        this.score = score;
+        this.matchScore = matchScore != null ? matchScore : new ArrayList<>();
     }
     // getters + setters
     public String getFirstName(){return firstName;}

@@ -38,8 +38,21 @@ public class CsvController {
                 String major = row.length>2?row[2]:"";
                 String gpa = row.length>3?row[3]:"";
                 String year = row.length>4?row[4]:"";
-                String score = row.length>4?row[5]:"";
-                int matchScore = row.length>6?Integer.parseInt(row[6]):0;
+                String score = row.length>5?row[5]:"";
+                
+                // Parse matchScore as a list of comma-separated integers
+                List<Integer> matchScore = new ArrayList<>();
+                if (row.length > 6 && !row[6].trim().isEmpty()) {
+                    String[] matchScores = row[6].split(",");
+                    for (String ms : matchScores) {
+                        try {
+                            matchScore.add(Integer.parseInt(ms.trim()));
+                        } catch (NumberFormatException e) {
+                            // Skip invalid numbers
+                        }
+                    }
+                }
+                
                 out.add(new Student(fn, ln, major, gpa, year, score, matchScore));
             }
             return out;
