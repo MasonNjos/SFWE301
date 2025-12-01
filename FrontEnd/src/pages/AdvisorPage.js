@@ -1,11 +1,15 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import './styles/AdvisorPage.css';
 
 function AdvisorPage() {
     const [role, setRole] = useState('');
     const [notificationText, setNotificationText] = useState('');
     const [toasts, setToasts] = useState([]);
-      
+
+    const[students, setStudents] = useState([]);
+    const [studentsLoading, setStudentsLoading] = useState(false); 
+    const [studentsError, setStudentsError] = useState(null);
+
     
       const handleRoleChange = (event) => {
         const selected = event.target.value;
@@ -23,6 +27,43 @@ function AdvisorPage() {
                                 setToasts((t) => t.filter((x) => x.id !== id));
                         }, 2000);
                 };
+
+
+
+    useEffect(() => {
+        const fetchStudents = async () => {
+            try {
+            setStudentsLoading(true);
+            setStudentsError(null);
+
+            const res = await fetch('http://localhost:8080/api/students');
+            if (!res.ok) {
+                throw new Error('Failed to load students');
+            }
+
+        const data = await res.json();
+
+        const nomalized = data.map((s, idx) => ({
+            id: s.id || idx + 1,
+            firstName: s.firstName || s.first || '',
+            lastName: s.lastName || s.last || s.lastName || '',
+            email :s.email || s.mail || '',
+            major: s.major || '',
+            gpa: s.gpa || '' ,
+            year: s.year || '',
+            scholarshipsAwarded: s.scholarshipsAwarded || s.awarded || ''
+        }));
+        setStudents(nomalized);
+    } catch (err) {
+        console.error(err);
+        setStudentsError(err.message);
+    } finally {
+        setStudentsLoading(false);
+    }
+};
+        fetchStudents();
+    }, []);
+   
     
     return(
 
@@ -142,13 +183,29 @@ function AdvisorPage() {
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>Jane Smith</td>
-                <td>jane.smith@example.com</td>
-                <td>3.8</td>
-                <td>Computer Science</td>
-                <td>STEM Excellence Scholarship</td>
-            </tr>
+            {studentsLoading ? (
+                <tr>
+                    <td colSpan={5}>Loading students...</td>
+                </tr>
+            ) : studentsError ? (
+                <tr>
+                    <td colSpan={5}>Error: {studentsError}</td>
+                </tr>
+            ) : students.length === 0 ? (
+                <tr>
+                    <td colSpan={5}>No students found.</td>
+                </tr>
+            ) : (
+                students.map((s) => (
+                    <tr key={s.id}>
+                        <td>{s.firstName} {s.lastName}</td>
+                        <td>{s.email}</td>
+                        <td>{s.gpa}</td>
+                        <td>{s.major}</td>
+                        <td>{s.scholarshipsAwarded}</td>
+                    </tr>
+                ))
+            )}
         </tbody>
          </table>      
             </div>
