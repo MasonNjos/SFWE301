@@ -13,12 +13,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-//@SpringBootApplication
+
+@SpringBootApplication
 public class BackendApplication {
 
 	public static void main(String[] args) {
-		// SpringApplication.run(BackendApplication.class, args);
+		SpringApplication.run(BackendApplication.class, args);
 		// make a list to store students
 		List<Student> students = new ArrayList<>();
 		List<Scholarship> scholarships = new ArrayList<>();
@@ -57,12 +60,14 @@ public class BackendApplication {
 
 		// test reading file by outputting each line
 		// DELETE LATER JUST FOR DEBUGGING
+		/*
 				for (Student currStudent : students) {
 					System.out.println("Student: " + currStudent.getFirstName() + " " + currStudent.getLastName() +
 							", Major: " + currStudent.getMajor() +
 							", GPA: " + currStudent.getGpa() +
 							", Year: " + currStudent.getYear());
 				}
+				*/
 
 
 
@@ -106,6 +111,7 @@ public class BackendApplication {
 
 				// test reading file by outputting each line
 		// DELETE LATER JUST FOR DEBUGGING
+		/*
 				for (Scholarship currScholarship : scholarships) {
 					System.out.println("Scholarship: " + currScholarship.getName() +
 							", Major: " + currScholarship.getMajor() +
@@ -113,6 +119,7 @@ public class BackendApplication {
 							", Year: " + currScholarship.getYear());
 
 				}
+				*/
 
 
 		// automatic scoring (mentioned above)
@@ -188,6 +195,7 @@ public class BackendApplication {
 
 				// test reading file by outputting each line
 		// DELETE LATER JUST FOR DEBUGGING
+		/*
 				for (Student currStudent : students) {
 					System.out.println("Student: " + currStudent.getFirstName() + " " + currStudent.getLastName() +
 							", Major: " + currStudent.getMajor() +
@@ -198,6 +206,7 @@ public class BackendApplication {
 							);
 
 				}
+				*/
 
 
 
