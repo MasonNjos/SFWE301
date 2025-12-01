@@ -76,6 +76,7 @@
   overflow: hidden;
   width: 100%;
   box-sizing: border-box;
+  z-index: 0;
 }
 
 
@@ -162,6 +163,8 @@
   padding: 0.5rem 1rem;
   border-radius: 8px;
   cursor: pointer;
+  z-index: 99999 !important;
+  pointer-events: auto;
 }
 
 .chat-panel{
@@ -176,6 +179,8 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  z-index: 99998 !important;
+  pointer-events: auto;
 }
 .chat-header{
   padding: 10px 12px;
