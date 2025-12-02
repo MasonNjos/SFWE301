@@ -43,11 +43,11 @@ return(
           <option value="" disabled>
             Select Category
           </option>
-          <option value="Stem">Stem</option>
-          <option value="Busniness-Econimics">Busniness and Econimics</option>
-          <option value="Health-medicine">Health and medicine</option>
-          <option value="Humanities-Social-Science">Humanities and Social Science</option>
-          <option value="Education and Teaching">Education and Teaching</option>
+          <option value="Engineering">Engineering</option>
+          <option value="Biomedical Engineering">Biomedical Engineering</option>
+          <option value="Software Engineering">Software Engineering</option>
+          <option value="Electical Engineering">Electical Engineering</option>
+          <option value="Systems Engineering">Systems Engineering</option>
         </select>    
         <p>Gpa</p>
     <input type="number" step="0.5" min="0.0" max="4.0" placeholder='Minimum Gpa Requirement'/>

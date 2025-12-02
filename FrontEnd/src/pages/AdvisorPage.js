@@ -132,11 +132,11 @@ function AdvisorPage() {
           <option value="" disabled>
             Field of Study
           </option>
-          <option value="Stem">Stem</option>
-          <option value="Busniness-Econimics">Busniness and Econimics</option>
-          <option value="Health-medicine">Health and medicine</option>
-          <option value="Humanities-Social-Science">Humanities and Social Science</option>
-          <option value="Education and Teaching">Education and Teaching</option>
+          <option value="Engineering">Engineering</option>
+          <option value="Biomedical Engineering">Biomedical Engineering</option>
+          <option value="Software Engineering">Software Engineering</option>
+          <option value="Electical Engineering">Electical Engineering</option>
+          <option value="Systems Engineering">Systems Engineering</option>
         </select>    
             </div>
         </div>
