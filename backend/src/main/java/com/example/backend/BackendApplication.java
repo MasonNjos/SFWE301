@@ -22,7 +22,7 @@ public class BackendApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BackendApplication.class, args);
-		// make a list to store students
+		// make a list to store students and scholarships
 		List<Student> students = new ArrayList<>();
 		List<Scholarship> scholarships = new ArrayList<>();
 
@@ -38,6 +38,7 @@ public class BackendApplication {
 
 				String line;
 				while ((line = reader.readLine()) != null) {
+					// store all fields as separate strings
 					String[] fields = line.split(",", -1);
 					String fName = headerIndex.containsKey("First Name") ? fields[headerIndex.get("First Name")].trim() : "";
 					String lName = headerIndex.containsKey("Last Name") ? fields[headerIndex.get("Last Name")].trim() : "";
@@ -46,30 +47,16 @@ public class BackendApplication {
 					String schoolYear = headerIndex.containsKey("Year") ? fields[headerIndex.get("Year")].trim() : "";
 					String score = headerIndex.containsKey("Score") ? fields[headerIndex.get("Score")].trim() : "";
 
-					// Process the data as needed
 					// store data in a list of Student objects
-					// matchScore initialized to 0
+					// matchScore initialized to null
 					Student student = new Student(fName, lName, major, gpa, schoolYear, score, null);
 					students.add(student);
 
 				}
 			}
-		} catch (IOException e) {
+		} catch (IOException e) {	// error reading file
 			System.out.println("Can't read file: " + e.getMessage());
 		}
-
-		// test reading file by outputting each line
-		// DELETE LATER JUST FOR DEBUGGING
-		/*
-				for (Student currStudent : students) {
-					System.out.println("Student: " + currStudent.getFirstName() + " " + currStudent.getLastName() +
-							", Major: " + currStudent.getMajor() +
-							", GPA: " + currStudent.getGpa() +
-							", Year: " + currStudent.getYear());
-				}
-				*/
-
-
 
 		// read in scholarships csv		
 			// onlly need gpa, major, school year
@@ -86,6 +73,7 @@ public class BackendApplication {
 
 				String line;
 				while ((line = reader.readLine()) != null) {
+					// as in students, store all fields as separate strings
 					String[] fields = line.split(",", -1);
 					String scholarshipId = headerIndex.containsKey("id") ? fields[headerIndex.get("id")].trim() : "";
 					String scholarshipName = headerIndex.containsKey("name") ? fields[headerIndex.get("name")].trim() : "";
@@ -105,32 +93,18 @@ public class BackendApplication {
 
 				}
 			}
-		} catch (IOException e) {
+		} catch (IOException e) {	// error reading file	
 			System.out.println("Can't read file: " + e.getMessage());
 		}
 
-				// test reading file by outputting each line
-		// DELETE LATER JUST FOR DEBUGGING
-		/*
-				for (Scholarship currScholarship : scholarships) {
-					System.out.println("Scholarship: " + currScholarship.getName() +
-							", Major: " + currScholarship.getMajor() +
-							", GPA: " + currScholarship.getGpa() +
-							", Year: " + currScholarship.getYear());
-
-				}
-				*/
-
-
-		// automatic scoring (mentioned above)
+		// automatic scoring 
 			// give each scholarship a "score" and then sort by highest score
 			// score is based on how well you match to the scholarship
-			// raise score based on gpa - 1 pt for min, 2 points for every 0.5 above min or something along those lines
 			// if one requirement is not met score = 0
 			// calculate score for each student
 			
 			for (Student currStudent : students) {
-				int currScore = 0;		// calculate later
+				int currScore = 0;		
 				int matches = 0;
 				int scholarshipCount = scholarships.size();
 				int currIndex = 0;
@@ -140,8 +114,6 @@ public class BackendApplication {
 					boolean eligible = true;
 					double studentGpa = Double.parseDouble(currStudent.getGpa());
 					double minGpa = Double.parseDouble(currScholarship.getGpa());
-
-					// SORT CSV BY MATCH SCORE WHEN OUTPUTTING TO CSV
 
 					// major
 					if (!(currScholarship.getMajor().equals(currStudent.getMajor()))) {
@@ -156,7 +128,6 @@ public class BackendApplication {
 						eligible = false;
 					}
 					// if eligible increment matches by one
-					// score logic probably can be somewhere here too but I just want to get matches for now
 					if (eligible) {
 						matches++;
 
@@ -196,37 +167,13 @@ public class BackendApplication {
 				currStudent.setScore(matchPercentStr);
 			}
 
-				// test reading file by outputting each line
-		// DELETE LATER JUST FOR DEBUGGING
-		
-				for (Student currStudent : students) {
-					System.out.println("Student: " + currStudent.getFirstName() + " " + currStudent.getLastName() +
-							", Major: " + currStudent.getMajor() +
-							", GPA: " + currStudent.getGpa() +
-							", Year: " + currStudent.getYear() + 
-							", Match %: " + currStudent.getScore() +
-							", Match Scores: " + currStudent.getMatchScore()
-							);
-
-				}
-				
-
-
 
 		// suggest scholarships
 			// System shall recommend scholarships to applicants based on gpa, major, and school year
 			// suggest based on score
 			// use the list of match scores, index corresponds to scholarship id
-			// maybe we could add a spot on the frontend for #1 recommended scholarship?
-			// and then the rest of the scores to sort them
-
-
-			// student matching (based on score)
-			// sort scholarships by score (high to low)
-			// sort scholarships.csv based on each student's match score list
-			// don't display 0 score scholarships
 			
-		// write scores back to CSV (safe overwrite)
+		// write scores back to CSV 
 		try {
 			writeScoresToCsv(Paths.get("student.csv"), students);
 		} catch (IOException e) {
@@ -234,11 +181,9 @@ public class BackendApplication {
 		}	}
 
 	// Write student scores and matchScores back into the CSV file.
-	// - path: Path to students CSV
-	// - students: List<Student> where Student.getScore() returns the match percent string
-	//   and Student.getMatchScore() returns a List<Integer>
 	private static void writeScoresToCsv(Path path, List<Student> students) throws IOException {
 		List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
+		// make sure there is at least a header
 		if (lines.isEmpty()) return;
 
 		String header = lines.get(0);
@@ -332,7 +277,7 @@ public class BackendApplication {
 
 		Path parent = path.toAbsolutePath().getParent();
 		if (parent == null) {
-			// when path has no parent (e.g. running with relative single-name file), use working dir
+			// when path is running with relative single-name file, use working dir
 			parent = Paths.get(System.getProperty("user.dir")).toAbsolutePath();
 		}
 		Path tmp = Files.createTempFile(parent, "student-", ".csv");
