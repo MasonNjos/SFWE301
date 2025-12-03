@@ -22,9 +22,9 @@ The way to launch this program is:
 
 9.Once it has clone open two different IDE Windows
 
-10.Open the project on both of the IDE
+10.Open the project on both of the IDEs
 
-The first IDE open the terminal and run
+In the first IDE open the terminal and run
 
 11.cd backend
 
@@ -33,7 +33,7 @@ The first IDE open the terminal and run
 13.The terminal will start and you know it is done when you start to see Springboot in the terminal
 
 
-14.The second IDE open the terminal and run
+14.In the second IDE open the terminal and run
 
 15.cd FrontEnd
 
@@ -41,6 +41,6 @@ The first IDE open the terminal and run
 
 17.once the react project starts to compile and build
 
-18.will then show a web page with the project in it
+it will then show a web page with the project in it
 
 Once that is done the project should be good to go/
