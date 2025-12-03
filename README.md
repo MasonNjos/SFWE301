@@ -1,6 +1,6 @@
 This is the scholarship project for SFWE 301 
 
-This project is made used React, RESTAPi, Springboot and also Maven. The front end usses React and the back end has maven and springboot. The way they are connected is through rest api.
+This project is made used React, RESTAPi, Springboot and also Maven. The front end uses React and the back end has maven and springboot. The way they are connected is through rest api.
 
 The way to launch this program is:
 
@@ -23,7 +23,7 @@ The first IDE open the terminal and run
 14.The second IDE open the terminal and run
 15.cd FrontEnd
 16.npm start
-17.once the react project starts to complie and build
+17.once the react project starts to compile and build
 18.will then show a web page with the project in it
 
-Once that is done the project should be good to go
+Once that is done the project should be good to go/
