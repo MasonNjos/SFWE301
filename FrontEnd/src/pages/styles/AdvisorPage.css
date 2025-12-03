@@ -58,7 +58,7 @@ text-align: left;
   gap: 10px;
 }
 
-/* Buttons (generic) */
+
 .button-approve,
 .button-deny,
 .button-generate-report,
@@ -113,7 +113,7 @@ text-align: left;
   background: #3b5bdb;
 }
 
-/* Filters / inputs */
+
 .report-filters {
   display: flex;
   flex-wrap: wrap;
@@ -144,7 +144,7 @@ text-align: left;
   resize: vertical;
 }
 
-/* Extra form row at bottom */
+
 .form-row {
   display: flex;
   flex-direction: column;
