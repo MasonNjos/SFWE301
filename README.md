@@ -4,26 +4,26 @@ This project is made used React, RESTAPi, Springboot and also Maven. The front e
 
 The way to launch this program is:
 
-Go to this link: https://github.com/MasonNjos/SFWE301
-Click on the Green Button that says "< > Code"
-Copy the HTTPS link that it gives with the copy button
-Open your computer Terminals
-Change the current directory to the location where you want the cloned directory
-Type "git clone" and paste the URL that was copied earlier
-Press Enter to create a local clone
-Wait for it to clone
-Once it has clone open two different IDE Windows
-Open the project on both of the IDE
+1.Go to this link: https://github.com/MasonNjos/SFWE301
+2.Click on the Green Button that says "< > Code"
+3.Copy the HTTPS link that it gives with the copy button
+4.Open your computer Terminals
+5.Change the current directory to the location where you want the cloned directory
+6.Type "git clone" and paste the URL that was copied earlier
+7.Press Enter to create a local clone
+8.Wait for it to clone
+9.Once it has clone open two different IDE Windows
+10.Open the project on both of the IDE
 
 The first IDE open the terminal and run
-cd backend
-mvn-springboot:run
-The terminal will start and you know it is done when you start to see Springboot in the terminal
+11.cd backend
+12.mvn-springboot:run
+13.The terminal will start and you know it is done when you start to see Springboot in the terminal
 
-The second IDE open the terminal and run
-cd FrontEnd
-npm start
-once the react project starts to complie and build
-will then show a web page with the project in it
+14.The second IDE open the terminal and run
+15.cd FrontEnd
+16.npm start
+17.once the react project starts to complie and build
+18.will then show a web page with the project in it
 
 Once that is done the project should be good to go
